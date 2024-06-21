@@ -1,0 +1,499 @@
+################
+# Test case for validation of point charges.
+################
+
+################
+##### FLAGS ####
+################
+use_electrostatic = 1
+use_transport = 0
+amrex.the_arena_is_managed=1
+
+################################
+##### Some Important Params ####
+################################
+my_constants.gx = 2
+my_constants.gy = 4
+my_constants.gz = 2
+
+my_constants.num_CNTs = 1
+my_constants.periodicity_factor = 1.875 #1.875 corresponds to 3.195 nm (smallest periodicity distance)
+
+my_constants.Channel_unitcells = 24
+my_constants.Overlap_unitcells = 12
+
+my_constants.Vds = 0.   #Drain-Source voltage [V]
+my_constants.Vgs_min = 0
+my_constants.Vgs_max = 0
+my_constants.Nsteps = 1
+my_constants.dt = 1
+
+plot.folder_name = ELEQTRONeX_point_Charges
+#plot.folder_name = /global/cfs/projectdirs/m4540/eXstatic/point_charges
+plot.write_after_init = 1
+plot.write_interval = 1
+
+transport.flag_compute_DOS = 1 #DOS, Transmission, Conductance
+transport.flag_write_LDOS = 0
+transport.flag_write_LDOS_iter = 0
+transport.write_LDOS_iter_period = 10
+
+restart = 0
+restart_step = 0
+##################################
+##### USER DEFINED CONSTANTS #####
+##################################
+
+### Physical and Other Constants ###
+####################################
+
+my_constants.q = 1.602e-19
+my_constants.epsilon_0 = 8.8541878128e-12
+my_constants.pi = 3.141592653589793
+
+my_constants.epsilon_GO     = 3.9*epsilon_0
+
+my_constants.SV = 0.      #source voltage [V]
+my_constants.Ef = -1.     #Palladium Contact Fermi level [eV] 
+
+### Total domain dimensions ###
+###############################
+my_constants.Gap_unitcells = 0
+my_constants.N_unitcells = Channel_unitcells + 2*Overlap_unitcells + 2*Gap_unitcells 
+
+my_constants.Ly_offset_unitcells = 0
+
+my_constants.cells_per_unitcell = 16 #cell_size = 0.0355 nm
+
+my_constants.unitcells_per_D_CN = ceil((R_CN*2)/(L_unitcell)) #unitcells per diameter
+
+my_constants.periodicity_length = periodicity_factor * unitcells_per_D_CN * L_unitcell
+
+my_constants.width_factor  = (num_CNTs)*periodicity_factor #1.875 corresponds to 3.195 nm (smallest periodicity distance)
+
+my_constants.height_factor = 12
+
+my_constants.ny = (N_unitcells + Ly_offset_unitcells) * cells_per_unitcell
+my_constants.nx =  width_factor  * unitcells_per_D_CN * cells_per_unitcell
+my_constants.nz =  height_factor  * unitcells_per_D_CN * cells_per_unitcell
+
+my_constants.Ly = (N_unitcells + Ly_offset_unitcells) * L_unitcell * 30
+my_constants.Lx = width_factor  * unitcells_per_D_CN  * L_unitcell * 30 
+my_constants.Lz = height_factor  * unitcells_per_D_CN  * L_unitcell * 30
+
+my_constants.dx = Lx/nx
+my_constants.dy = Ly/ny
+my_constants.dz = Lz/nz
+
+my_constants.Lz_min = -(R_CN + small_gap + GO_total_thickness + G_thickness)
+my_constants.Lz_max = Lz + Lz_min
+
+### Carbon nanotube ###
+#######################
+
+my_constants.m_index = 17
+my_constants.n_index = 0
+
+
+my_constants.bond_length = 0.142e-9
+my_constants.small_gap = 0.3e-9 #gap between nanotube and the contacts
+
+my_constants.CN_z = 0.
+my_constants.CN_x = 0.
+my_constants.CN_y = 0.
+
+my_constants.L_unitcell = 3*bond_length #0.426e-9
+my_constants.R_CN = bond_length*sqrt(3.*(m_index*m_index + n_index*n_index + m_index*n_index))/(2*pi)  #radius
+my_constants.CN_co_l = Overlap_unitcells*L_unitcell  #total contact overlap length on both sides 
+
+my_constants.CNT_gap = 2.e-9
+
+### contact metal ###
+#####################
+my_constants.CM_length = CN_co_l + MGO_gap
+my_constants.CM_height = 5.e-9  + MGO_gap
+
+### gate oxide ###
+##################
+
+my_constants.GO_total_thickness = 10.e-9
+my_constants.GO_bottom = Lz_min - dz/5.
+my_constants.GO_top    = GO_bottom + GO_total_thickness + dz/5.
+my_constants.GO_middle = GO_top - CM_height
+
+### gate ###
+############
+
+my_constants.G_thickness = 0
+##################################################
+###### TIME DEPENDENT SIMULATION PROPERTIES ######
+##################################################
+
+timestep = dt
+steps = Nsteps
+
+####################################
+###### EMBEDDED BOUNDARIES #########
+####################################
+
+domain.embedded_boundary = 0  #options: 1=true, 0=false (default)
+domain.specify_using_eb2 = 0  #options: 1=true, 0=false (default)
+
+ebgeom.objects = Source Drain
+ebgeom.specify_inhomo_dir = 1
+
+my_constants.MGO_gap = -2*dx/5. #gap between metal and gate oxide
+my_constants.MB_gap  = -2*dx/5.
+
+Source.geom_type        = box
+Source.box_lo           = (-Lx/2. + MB_gap) (-Ly/2. + MB_gap) ( GO_top - CM_height + MGO_gap)  
+Source.box_hi           = ( Lx/2. - MB_gap) (-Ly/2. + CM_length - MGO_gap ) ( GO_top)
+Source.has_fluid_inside = false
+Source.surf_soln        = SV 
+
+Drain.geom_type         = box
+Drain.box_lo            = (-Lx/2. + MB_gap) ( Ly/2. - CM_length + MGO_gap ) ( GO_top - CM_height + MGO_gap)
+Drain.box_hi            = ( Lx/2. - MB_gap) ( Ly/2. - MB_gap  ) ( GO_top )
+Drain.has_fluid_inside  = false
+Drain.surf_soln         = Vds + SV  
+#################################
+###### GEOMETRY PROPERTIES ######
+#################################
+domain.n_cell = nx ny nz
+domain.max_grid_size = nx/gx ny/gy nz/gz
+domain.blocking_factor = nx/gx ny/gy nz/gz
+
+
+domain.prob_lo = -Lx/2. -Ly/2.  Lz_min
+domain.prob_hi =  Lx/2.  Ly/2.  Lz_max
+
+domain.is_periodic = 1 0 0
+
+domain.coord_sys = cartesian
+
+#################################
+###### BOUNDARY CONDITIONS ######
+#################################
+boundary.hi = per neu(0.) neu(0.)
+boundary.lo = per neu(0.) dir(Gate)
+
+boundary.Gate_function = "SV + Vgs_max - (Vgs_max-Vgs_min) * t"
+
+####################################
+###### MACROSCOPIC PROPERTIES ######
+####################################
+macroscopic.fields_to_define = alpha epsilon charge_density phi atom_locations
+macroscopic.ghostcells_for_fields = alpha.0 epsilon.1 charge_density.1 phi.1  atom_locations.0
+
+macroscopic.alpha = 0.
+macroscopic.charge_density = 0.
+macroscopic.epsilon_function = "epsilon_0 + (epsilon_GO - epsilon_0) * (z < GO_middle) + (epsilon_GO - epsilon_0) * (z >= GO_middle) * (z < GO_top) * (y >= (-Ly/2. + CM_length) ) * (y < (Ly/2. - CM_length)  ) "
+
+macroscopic.phi = 0.
+macroscopic.atom_locations = 0.
+
+##############################
+###### Point Charges #########
+##############################
+
+charge_density_source.num = 200
+charge_density_source.type = point_charge
+
+pc_1.location = 0. -2.4400e-08 3.0000e-08
+pc_2.location = 0. -2.4400e-08 3.1600e-08
+pc_3.location = 0. -2.4400e-08 2.8400e-08
+pc_4.location = 0. -2.7600e-08 3.0800e-08
+pc_5.location = 0. -2.7600e-08 2.9200e-08
+pc_6.location = 0. -2.6000e-08 3.0000e-08
+pc_7.location = 0. -2.6000e-08 3.1600e-08
+pc_8.location = 0. -2.6000e-08 2.8400e-08
+pc_9.location = 0. -2.7600e-08 3.0000e-08
+pc_10.location = 0. -2.7600e-08 3.1600e-08
+pc_11.location = 0. -2.7600e-08 2.8400e-08
+pc_12.location = 0. -2.2000e-08 3.0000e-08
+pc_13.location = 0. -2.2000e-08 3.1600e-08
+pc_14.location = 0. -2.2000e-08 2.8400e-08
+pc_15.location = 0. -2.2000e-08 3.0800e-08
+pc_16.location = 0. -2.2000e-08 2.9200e-08
+pc_17.location = 0. -2.0400e-08 2.8400e-08
+pc_18.location = 0. -1.8800e-08 2.8400e-08
+pc_19.location = 0. -1.3200e-08 3.0000e-08
+pc_20.location = 0. -1.3200e-08 3.1600e-08
+pc_21.location = 0. -1.3200e-08 2.8400e-08
+pc_22.location = 0. -1.6400e-08 3.0800e-08
+pc_23.location = 0. -1.6400e-08 2.9200e-08
+pc_24.location = 0. -1.4800e-08 3.0000e-08
+pc_25.location = 0. -1.4800e-08 3.1600e-08
+pc_26.location = 0. -1.4800e-08 2.8400e-08
+pc_27.location = 0. -1.6400e-08 3.0000e-08
+pc_28.location = 0. -1.6400e-08 3.1600e-08
+pc_29.location = 0. -1.6400e-08 2.8400e-08
+pc_30.location = 0. -1.0400e-08 3.0000e-08
+pc_31.location = 0. -9.6000e-09 3.1200e-08
+pc_32.location = 0. -5.6000e-09 3.0000e-08
+pc_33.location = 0. -6.4000e-09 3.1200e-08
+pc_34.location = 0. -8.0000e-09 3.1600e-08
+pc_35.location = 0. -8.0000e-09 2.8400e-08
+pc_36.location = 0. -9.6000e-09 2.8800e-08
+pc_37.location = 0. -7.2000e-09 2.9200e-08
+pc_38.location = 0. -5.6000e-09 2.8400e-08
+pc_39.location = 0. -6.4000e-09 2.8800e-08
+pc_40.location = 0. -4.4000e-09 3.1600e-08
+pc_41.location = 0. -2.0000e-09 3.1600e-08
+pc_42.location = 0. 4.0000e-10 3.1600e-08
+pc_43.location = 0. -2.8000e-09 3.1600e-08
+pc_44.location = 0. -1.2000e-09 3.1600e-08
+pc_45.location = 0. -2.0000e-09 3.0000e-08
+pc_46.location = 0. -2.0000e-09 2.8400e-08
+pc_47.location = 0. -2.0000e-09 3.0800e-08
+pc_48.location = 0. -2.0000e-09 2.9200e-08
+pc_49.location = 0. 2.4000e-09 3.1600e-08
+pc_50.location = 0. 2.4000e-09 3.0000e-08
+pc_51.location = 0. 2.4000e-09 2.8400e-08
+pc_52.location = 0. 2.4000e-09 3.0800e-08
+pc_53.location = 0. 2.4000e-09 2.9200e-08
+pc_54.location = 0. 4.4000e-09 3.1600e-08
+pc_55.location = 0. 4.4000e-09 3.0000e-08
+pc_56.location = 0. 5.2000e-09 3.0800e-08
+pc_57.location = 0. 4.8000e-09 2.9200e-08
+pc_58.location = 0. 5.2000e-09 2.8400e-08
+pc_59.location = 0. 7.6000e-09 3.0000e-08
+pc_60.location = 0. 8.4000e-09 3.1200e-08
+pc_61.location = 0. 1.2400e-08 3.0000e-08
+pc_62.location = 0. 1.1600e-08 3.1200e-08
+pc_63.location = 0. 1.0000e-08 3.1600e-08
+pc_64.location = 0. 1.0000e-08 2.8400e-08
+pc_65.location = 0. 8.4000e-09 2.8800e-08
+pc_66.location = 0. 1.1600e-08 2.8800e-08
+pc_67.location = 0. 1.5200e-08 3.1600e-08
+pc_68.location = 0. 1.5200e-08 3.0000e-08
+pc_69.location = 0. 1.5200e-08 2.8400e-08
+pc_70.location = 0. 1.5200e-08 3.0800e-08
+pc_71.location = 0. 1.5200e-08 2.9200e-08
+pc_72.location = 0. 2.0000e-08 3.1600e-08
+pc_73.location = 0. 2.0000e-08 3.0000e-08
+pc_74.location = 0. 2.0000e-08 2.8400e-08
+pc_75.location = 0. 2.0000e-08 3.0800e-08
+pc_76.location = 0. 2.0000e-08 2.9200e-08
+pc_77.location = 0. 1.7600e-08 3.0000e-08
+pc_78.location = 0. 1.6000e-08 3.0800e-08
+pc_79.location = 0. 1.9200e-08 2.9200e-08
+pc_80.location = 0. 2.2000e-08 3.0000e-08
+pc_81.location = 0. 2.3600e-08 3.0000e-08
+pc_82.location = 0. 2.5200e-08 3.0000e-08
+pc_83.location = 0. 2.5200e-08 3.0000e-08
+pc_84.location = 0. 2.2400e-08 2.8800e-08
+pc_85.location = 0. 2.2800e-08 3.0800e-08
+pc_86.location = 0. 2.4400e-08 3.0800e-08
+pc_87.location = 0. 2.3600e-08 3.0800e-08
+pc_88.location = 0. 2.3200e-08 2.8400e-08
+pc_89.location = 0. 2.4000e-08 2.8400e-08
+pc_90.location = 0. 2.4800e-08 2.8800e-08
+pc_91.location = 0. 2.6800e-08 3.1600e-08
+pc_92.location = 0. 2.8000e-08 3.0800e-08
+pc_93.location = 0. 2.9200e-08 3.0000e-08
+pc_94.location = 0. 3.0400e-08 3.0800e-08
+pc_95.location = 0. 3.1600e-08 2.8400e-08
+pc_96.location = 0. 2.6800e-08 2.8400e-08
+pc_97.location = 0. 2.9200e-08 3.0000e-08
+pc_98.location = 0. 3.1600e-08 3.1600e-08
+pc_99.location = 0. 2.8000e-08 2.9200e-08
+pc_100.location = 0. 3.0400e-08 2.9200e-08
+pc_101.location = 0. -2.5200e-08 3.0000e-08
+pc_102.location = 0. -2.5200e-08 3.1600e-08
+pc_103.location = 0. -2.5200e-08 2.8400e-08
+pc_104.location = 0. -2.7600e-08 3.0400e-08
+pc_105.location = 0. -2.7600e-08 2.9600e-08
+pc_106.location = 0. -2.6800e-08 3.0000e-08
+pc_107.location = 0. -2.6800e-08 3.1600e-08
+pc_108.location = 0. -2.6800e-08 2.8400e-08
+pc_109.location = 0. -2.6800e-08 3.0000e-08
+pc_110.location = 0. -2.6800e-08 3.1600e-08
+pc_111.location = 0. -2.6800e-08 2.8400e-08
+pc_112.location = 0. -2.2000e-08 3.0400e-08
+pc_113.location = 0. -2.2000e-08 3.1200e-08
+pc_114.location = 0. -2.2000e-08 2.8800e-08
+pc_115.location = 0. -2.2000e-08 3.0400e-08
+pc_116.location = 0. -2.2000e-08 2.9600e-08
+pc_117.location = 0. -1.9600e-08 2.8400e-08
+pc_118.location = 0. -1.9600e-08 2.8400e-08
+pc_119.location = 0. -1.4000e-08 3.0000e-08
+pc_120.location = 0. -1.4000e-08 3.1600e-08
+pc_121.location = 0. -1.4000e-08 2.8400e-08
+pc_122.location = 0. -1.6400e-08 3.0400e-08
+pc_123.location = 0. -1.6400e-08 2.9600e-08
+pc_124.location = 0. -1.4000e-08 3.0000e-08
+pc_125.location = 0. -1.4000e-08 3.1600e-08
+pc_126.location = 0. -1.4000e-08 2.8400e-08
+pc_127.location = 0. -1.5600e-08 3.0000e-08
+pc_128.location = 0. -1.5600e-08 3.1600e-08
+pc_129.location = 0. -1.5600e-08 2.8400e-08
+pc_130.location = 0. -1.0000e-08 3.0600e-08
+pc_131.location = 0. -8.8000e-09 3.1400e-08
+pc_132.location = 0. -6.4000e-09 2.9600e-08
+pc_133.location = 0. -7.2000e-09 3.1400e-08
+pc_134.location = 0. -8.8000e-09 3.1400e-08
+pc_135.location = 0. -8.8000e-09 2.8600e-08
+pc_136.location = 0. -8.8000e-09 2.8600e-08
+pc_137.location = 0. -6.8000e-09 2.9000e-08
+pc_138.location = 0. -6.0000e-09 2.8600e-08
+pc_139.location = 0. -6.0000e-09 2.8600e-08
+pc_140.location = 0. -3.6000e-09 3.1600e-08
+pc_141.location = 0. -1.6000e-09 3.1600e-08
+pc_142.location = 0. -4.0000e-10 3.1600e-08
+pc_143.location = 0. -2.4000e-09 3.1600e-08
+pc_144.location = 0. -1.6000e-09 3.1600e-08
+pc_145.location = 0. -2.0000e-09 3.0400e-08
+pc_146.location = 0. -2.0000e-09 2.8800e-08
+pc_147.location = 0. -2.0000e-09 3.1200e-08
+pc_148.location = 0. -2.0000e-09 2.9600e-08
+pc_149.location = 0. 2.4000e-09 3.1200e-08
+pc_150.location = 0. 2.4000e-09 3.0400e-08
+pc_151.location = 0. 2.4000e-09 2.8800e-08
+pc_152.location = 0. 2.4000e-09 3.1200e-08
+pc_153.location = 0. 2.4000e-09 2.9600e-08
+pc_154.location = 0. 4.8000e-09 3.1200e-08
+pc_155.location = 0. 4.6000e-09 2.9600e-08
+pc_156.location = 0. 4.8000e-09 3.1200e-08
+pc_157.location = 0. 4.6000e-09 2.9600e-08
+pc_158.location = 0. 5.0000e-09 2.8800e-08
+pc_159.location = 0. 8.0000e-09 3.0600e-08
+pc_160.location = 0. 9.2000e-09 3.1400e-08
+pc_161.location = 0. 1.2000e-08 3.0600e-08
+pc_162.location = 0. 1.0800e-08 3.1400e-08
+pc_163.location = 0. 9.2000e-09 3.1400e-08
+pc_164.location = 0. 9.2000e-09 2.8600e-08
+pc_165.location = 0. 9.2000e-09 2.8600e-08
+pc_166.location = 0. 1.0800e-08 2.8600e-08
+pc_167.location = 0. 1.5200e-08 3.1200e-08
+pc_168.location = 0. 1.5200e-08 3.0400e-08
+pc_169.location = 0. 1.5200e-08 2.8800e-08
+pc_170.location = 0. 1.5600e-08 3.0800e-08
+pc_171.location = 0. 1.5200e-08 2.9600e-08
+pc_172.location = 0. 2.0000e-08 3.1200e-08
+pc_173.location = 0. 2.0000e-08 3.0400e-08
+pc_174.location = 0. 2.0000e-08 2.8800e-08
+pc_175.location = 0. 2.0000e-08 3.1200e-08
+pc_176.location = 0. 1.9600e-08 2.9200e-08
+pc_177.location = 0. 1.6800e-08 3.0400e-08
+pc_178.location = 0. 1.5600e-08 3.0800e-08
+pc_179.location = 0. 1.9600e-08 2.9200e-08
+pc_180.location = 0. 2.2800e-08 3.0000e-08
+pc_181.location = 0. 2.2800e-08 3.0000e-08
+pc_182.location = 0. 2.4400e-08 3.0000e-08
+pc_183.location = 0. 2.4400e-08 3.0000e-08
+pc_184.location = 0. 2.2800e-08 2.8600e-08
+pc_185.location = 0. 2.3200e-08 3.0800e-08
+pc_186.location = 0. 2.4000e-08 3.0800e-08
+pc_187.location = 0. 2.3200e-08 3.0800e-08
+pc_188.location = 0. 2.3600e-08 2.8400e-08
+pc_189.location = 0. 2.3600e-08 2.8400e-08
+pc_190.location = 0. 2.4400e-08 2.8600e-08
+pc_191.location = 0. 2.7400e-08 3.1200e-08
+pc_192.location = 0. 2.8600e-08 3.0400e-08
+pc_193.location = 0. 2.8600e-08 3.0400e-08
+pc_194.location = 0. 2.9800e-08 3.0400e-08
+pc_195.location = 0. 3.1000e-08 2.8800e-08
+pc_196.location = 0. 2.7400e-08 2.8800e-08
+pc_197.location = 0. 2.8600e-08 3.0400e-08
+pc_198.location = 0. 3.1000e-08 3.1200e-08
+pc_199.location = 0. 2.8600e-08 2.9600e-08
+pc_200.location = 0. 2.9800e-08 2.9600e-08
+
+
+#############################
+###### POST PROCESSING ######
+#############################
+
+#post_process.fields_to_process = vecField
+
+####################
+###### OUTPUT ######
+####################
+
+plot.fields_to_plot = epsilon.1 charge_density.1 phi.1 atom_locations #vecField 
+plot.rawfield_write_interval = 1000000
+
+########################
+###### DIAGNOSTICS #####
+########################
+use_diagnostics = 0
+
+#diag.specify_using_eb = 1
+#diag.objects = Surf1
+#Surf1.geom_type = cylinder
+#Surf1.center = 0 0 CN_z
+#Surf1.radius = R_CN
+#Surf1.axial_direction = 1
+#Surf1.theta_reference_direction = 0
+#Surf1.has_fluid_inside = 0
+#Surf1.fields_to_plot = phi charge_density
+
+####################################
+###### MLMG SOLVER PROPERTIES ######
+####################################
+
+mlmg.ascalar=0
+mlmg.bscalar=1
+
+mlmg.soln   = phi
+mlmg.rhs    = charge_density
+mlmg.alpha  = alpha
+mlmg.beta   = epsilon
+
+mlmg.set_verbose=0
+mlmg.max_order=2
+mlmg.absolute_tolerance=0
+mlmg.relative_tolerance=1e-10
+
+#################
+###### NEGF #####
+#################
+transport.use_negf = 1
+
+#transport.NS_names = cnt1 cnt2 
+transport.NS_num = num_CNTs
+transport.NS_type_default = CNT
+transport.NS_gather_field = phi            
+transport.NS_deposit_field  = charge_density 
+transport.NS_initial_deposit_value  = 1.e-3
+transport.Broyden_fraction = 0.1
+transport.Broyden_max_norm = 1.e-5
+transport.Broyden_norm_type = relative
+transport.selfconsistency_algorithm = broyden_second
+transport.reset_with_previous_charge_distribution = 1
+transport.initialize_inverse_jacobian = 0
+transport.gate_terminal_type = Boundary
+transport.Broyden_threshold_maxstep = 100
+
+NS_default.num_unitcells = N_unitcells
+NS_default.rotation_order = Z
+NS_default.rotation_angle_type = D
+NS_default.contact_Fermi_level = Ef
+NS_default.contact_mu_specified = 1
+NS_default.contact_mu = Ef (Ef - Vds)
+NS_default.contact_T  = 298. 298.
+NS_default.Fermi_tail_factors = 14 14
+NS_default.eq_integration_pts = 30 30 30
+NS_default.flag_compute_flatband_dos = 1
+NS_default.flatband_dos_integration_pts = 400
+NS_default.flatband_dos_integration_limits = -1. 1.
+NS_default.noneq_integration_pts = 400
+NS_default.flag_write_integrand = 0
+NS_default.flag_write_charge_components = 0
+NS_default.num_noneq_paths = 1
+NS_default.num_recursive_parts = 2
+NS_default.write_at_iter = 0
+NS_default.initialize_charge_distribution = 0
+#NS_default.charge_distribution_filename = <full filename>
+#NS_default.read_step = 
+#NS_default.read_negf_foldername = 
+NS_default.E_valence_min = -10
+NS_default.E_pole_max    = 3
+NS_default.E_zPlus_imag  = 1.e-5
+
+CNT_default.type_id = m_index n_index    
+CNT_default.acc = bond_length
+CNT_default.gamma = 2.5     
+NS_1.offset = (CN_x + (0/2.)*periodicity_length) CN_y CN_z
+NS_1.rotation_angles = 0 0 0.0
