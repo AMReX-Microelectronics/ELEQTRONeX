@@ -1,0 +1,40 @@
+Host Name: angilas
+=== If no file names and line numbers are shown below, one can run
+            addr2line -Cpfie my_exefile my_line_address
+    to convert `my_line_address` (e.g., 0x4a6b) into file name and line number.
+    Or one can use amrex/Tools/Backtrace/parse_bt.py.
+
+=== Please note that the line number reported by addr2line may not be accurate.
+    One can use
+            readelf -wl my_exefile | grep my_line_address'
+    to find out the offset for that line.
+
+ 0: ./main3d.gnu.TPROF.MPI.GPUMatOp.ex(+0x1d8cf8) [0x5f3815edecf8]
+    amrex::BLBackTrace::handler(int) at /usr/include/x86_64-linux-gnu/bits/unistd.h:284
+ (inlined by) amrex::BLBackTrace::print_backtrace_info(_IO_FILE*) at /home/tlara/Amrex_Code_and_Tools/ELEQTRONeX/scripts/negf_cpp/decimation_technique/Exec/../../../../../amrex/Src/Base/AMReX_BLBackTrace.cpp:200
+ (inlined by) amrex::BLBackTrace::handler(int) at /home/tlara/Amrex_Code_and_Tools/ELEQTRONeX/scripts/negf_cpp/decimation_technique/Exec/../../../../../amrex/Src/Base/AMReX_BLBackTrace.cpp:98
+
+ 1: ./main3d.gnu.TPROF.MPI.GPUMatOp.ex(+0x372a3) [0x5f3815d3d2a3]
+    amrex::Assert_host(char const*, char const*, int, char const*) at /home/tlara/Amrex_Code_and_Tools/ELEQTRONeX/scripts/negf_cpp/decimation_technique/Exec/../../../../../amrex/Src/Base/AMReX.cpp:289
+
+ 2: ./main3d.gnu.TPROF.MPI.GPUMatOp.ex(+0x2c1db) [0x5f3815d321db]
+    std::__cxx11::to_string(double) at /usr/include/c++/11/bits/basic_string.h:6735
+ (inlined by) Check_SurfaceGreensFunctionAsserts() at /home/tlara/Amrex_Code_and_Tools/ELEQTRONeX/scripts/negf_cpp/decimation_technique/Exec/../Source/main.cpp:786
+
+ 3: ./main3d.gnu.TPROF.MPI.GPUMatOp.ex(+0x23ff6) [0x5f3815d29ff6]
+    std::vector<amrex::ParallelContext::Frame, std::allocator<amrex::ParallelContext::Frame> >::operator[](unsigned long) at /usr/include/c++/11/bits/stl_vector.h:1046
+ (inlined by) amrex::Vector<amrex::ParallelContext::Frame, std::allocator<amrex::ParallelContext::Frame> >::operator[](unsigned long) at /home/tlara/Amrex_Code_and_Tools/ELEQTRONeX/scripts/negf_cpp/decimation_technique/Exec/../../../../../amrex/Src/Base/AMReX_Vector.H:36
+ (inlined by) amrex::ParallelContext::NProcsAll() at /home/tlara/Amrex_Code_and_Tools/ELEQTRONeX/scripts/negf_cpp/decimation_technique/Exec/../../../../../amrex/Src/Base/AMReX_ParallelContext.H:59
+ (inlined by) amrex::ParallelDescriptor::NProcs() at /home/tlara/Amrex_Code_and_Tools/ELEQTRONeX/scripts/negf_cpp/decimation_technique/Exec/../../../../../amrex/Src/Base/AMReX_ParallelDescriptor.H:245
+ (inlined by) main at /home/tlara/Amrex_Code_and_Tools/ELEQTRONeX/scripts/negf_cpp/decimation_technique/Exec/../Source/main.cpp:802
+
+ 4: /lib/x86_64-linux-gnu/libc.so.6(+0x29d90) [0x7dc139c29d90]
+
+ 5: /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x80) [0x7dc139c29e40]
+
+ 6: ./main3d.gnu.TPROF.MPI.GPUMatOp.ex(+0x291c5) [0x5f3815d2f1c5]
+    ?? ??:0
+
+
+===== TinyProfilers ======
+
