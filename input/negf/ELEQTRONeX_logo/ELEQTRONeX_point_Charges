@@ -63,7 +63,7 @@ my_constants.N_unitcells = Channel_unitcells + 2*Overlap_unitcells + 2*Gap_unitc
 
 my_constants.Ly_offset_unitcells = 0
 
-my_constants.cells_per_unitcell = 16 #cell_size = 0.0355 nm
+my_constants.cells_per_unitcell = 32 #cell_size = 0.0355 nm
 
 my_constants.unitcells_per_D_CN = ceil((R_CN*2)/(L_unitcell)) #unitcells per diameter
 
@@ -405,7 +405,7 @@ pc_200.location = 0. 2.9800e-08 2.9600e-08
 ###### POST PROCESSING ######
 #############################
 
-#post_process.fields_to_process = vecField
+post_process.fields_to_process = vecField
 
 ####################
 ###### OUTPUT ######
@@ -418,16 +418,6 @@ plot.rawfield_write_interval = 1000000
 ###### DIAGNOSTICS #####
 ########################
 use_diagnostics = 0
-
-#diag.specify_using_eb = 1
-#diag.objects = Surf1
-#Surf1.geom_type = cylinder
-#Surf1.center = 0 0 CN_z
-#Surf1.radius = R_CN
-#Surf1.axial_direction = 1
-#Surf1.theta_reference_direction = 0
-#Surf1.has_fluid_inside = 0
-#Surf1.fields_to_plot = phi charge_density
 
 ####################################
 ###### MLMG SOLVER PROPERTIES ######
@@ -449,7 +439,7 @@ mlmg.relative_tolerance=1e-10
 #################
 ###### NEGF #####
 #################
-transport.use_negf = 1
+transport.use_negf = 0
 
 #transport.NS_names = cnt1 cnt2 
 transport.NS_num = num_CNTs
