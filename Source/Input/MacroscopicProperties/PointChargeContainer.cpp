@@ -201,7 +201,7 @@ void c_PointChargeContainer::Read_PointCharges()
         amrex::Real vol = 1.;
         for (int k = 0; k < AMREX_SPACEDIM; ++k)
         {
-            vol *= vec_scaling[k];
+            if(vec_scaling[k] != 0) vol *= vec_scaling[k];
         }
         num = static_cast<int>(charge_density * vol);
         amrex::Print() << "pc.num: " << num << "\n";
