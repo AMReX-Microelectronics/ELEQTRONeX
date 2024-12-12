@@ -12,8 +12,8 @@ amrex.the_arena_is_managed=1
 ################################
 ##### Some Important Params ####
 ################################
-my_constants.gx = 1
-my_constants.gy = 256
+my_constants.gx = 2
+my_constants.gy = 1024
 my_constants.gz = 2
 
 my_constants.num_CNTs = 1

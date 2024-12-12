@@ -12,15 +12,15 @@ amrex.the_arena_is_managed=1
 ################################
 ##### Some Important Params ####
 ################################
-my_constants.gx = 1
-my_constants.gy = 4
+my_constants.gx = 2
+my_constants.gy = 1024
 my_constants.gz = 2
 
 my_constants.num_CNTs = 1
-my_constants.periodicity_factor = 7.5 #corresponds to 24.7 nm width
+my_constants.periodicity_factor = 14.5 #corresponds to 24.7 nm width
 
-my_constants.Channel_unitcells = 24
-my_constants.Overlap_unitcells = 12
+my_constants.Channel_unitcells = 704
+my_constants.Overlap_unitcells = 32
 
 my_constants.Vds = 0.   #Drain-Source voltage [V]
 my_constants.Vgs_min = -10
@@ -33,7 +33,7 @@ my_constants.dt = 1./(Nsteps-1)
 plot.folder_name = /global/cfs/projectdirs/m4540/eXstatic/point_charge/planar_CNTFET_Francois_test
 #plot.folder_name = planar_CNTFET_10nm
 plot.write_after_init = 0
-plot.write_interval = 100000
+plot.write_interval = 10000
 
 transport.flag_compute_DOS = 1 #DOS, Transmission, Conductance
 transport.flag_write_LDOS = 1
@@ -74,7 +74,7 @@ my_constants.periodicity_length = periodicity_factor * unitcells_per_D_CN * L_un
 
 my_constants.width_factor  = (num_CNTs)*periodicity_factor #1.875 corresponds to 3.195 nm (smallest periodicity distance)
 
-my_constants.height_factor = 12
+my_constants.height_factor = 3*width_factor
 
 my_constants.ny = (N_unitcells + Ly_offset_unitcells) * cells_per_unitcell
 my_constants.nx =  width_factor  * unitcells_per_D_CN * cells_per_unitcell
@@ -178,7 +178,7 @@ domain.coord_sys = cartesian
 ###### Point Charges #########
 ##############################
 my_constants.ZOffset = GO_top - dz
-
+#
 charge_density_source.type = point_charge
 pc.flag_vary_occupation = 1
 pc.mixing_factor = 0.1
@@ -190,7 +190,7 @@ pc.default_charge_unit = 1
 pc.default_occupation = 1
 
 pc.flag_random_positions = 1
-pc.charge_density=0.7e18 #cubic meter
+pc.charge_density=0.04e18 #cubic meter
 pc.random_seed = 0
 
 #pc.num = 1
@@ -245,7 +245,7 @@ X.fields_to_plot = phi
 Y.geom_type = plane
 Y.direction = 1
 Y.location = 0.0
-Y.fields_to_plot = phi 
+Y.fields_to_plot = phi  
 
 Z.geom_type = plane
 Z.direction = 2
