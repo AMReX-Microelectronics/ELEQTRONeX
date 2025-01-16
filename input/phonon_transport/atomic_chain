@@ -1,0 +1,126 @@
+use_electrostatic = 0
+use_transport = 1
+amrex.the_arena_is_managed=1
+
+##################################
+##### USER DEFINED CONSTANTS #####
+##################################
+### Atomic Chain
+my_constants.N_unitcells = 1
+my_constants.atom_spacing = 5.5e-10
+my_constants.total_length = (N_unitcells+2)*atom_spacing
+
+my_constants.AC_x = 0.
+my_constants.AC_y = 0.
+my_constants.AC_z = 0.
+
+my_constants.Ef = -1.       #Contact Fermi level [eV]
+
+### Total domain dimensions
+my_constants.Lx = atom_spacing
+my_constants.Ly = total_length
+my_constants.Lz = Lx
+
+my_constants.nx = 2      
+my_constants.ny = N_unitcells         
+my_constants.nz = 2     
+
+my_constants.dx = Lx/nx
+my_constants.dy = Ly/ny
+my_constants.dz = Lz/nz
+
+my_constants.gx = 1
+my_constants.gy = 1
+my_constants.gz = 1
+
+##################################################
+###### TIME DEPENDENT SIMULATION PROPERTIES ######
+##################################################
+
+timestep = 1.
+steps = 1
+restart = 0
+restart_step = 0
+
+####################################
+###### EMBEDDED BOUNDARIES ######
+####################################
+
+domain.embedded_boundary = 0  #options: 1=true, 0=false (default)
+domain.specify_using_eb2 = 0  #options: 1=true, 0=false (default)
+
+#################################
+###### GEOMETRY PROPERTIES ######
+#################################
+
+domain.n_cell = nx ny nz
+domain.max_grid_size = nx/gx ny/gy nz/gz
+domain.blocking_factor = nx/gx ny/gy nz/gz
+
+domain.prob_lo = -Lx/2. -Ly/2.  -Lz/2.
+domain.prob_hi =  Lx/2.  Ly/2.  Lz/2.
+
+domain.is_periodic = 0 0 0
+
+domain.coord_sys = cartesian
+
+####################################
+###### MACROSCOPIC PROPERTIES ######
+####################################
+macroscopic.fields_to_define = charge_density atom_locations
+macroscopic.ghostcells_for_fields = charge_density.1 atom_locations.0
+
+macroscopic.charge_density = 0.
+macroscopic.atom_locations = 0.
+
+####################
+###### OUTPUT ######
+####################
+
+plot.folder_name = all_around_metal
+plot.fields_to_plot = phi.1
+plot.write_after_init = 0
+plot.write_interval = 1
+plot.rawfield_write_interval = 1000000
+
+#################
+###### NEGF #####
+#################
+
+transport.NS_names = atomic_chain
+transport.use_negf = 1
+
+transport.NS_initial_deposit_value  = 0.
+# transport.reset_with_previous_charge_distribution = 1
+
+atomic_chain.type = atomic_chain
+atomic_chain.f_d  = 50 # N/m
+atomic_chain.f_c  = 25 # N/m
+atomic_chain.f_cd = 37.5 # N/m
+atomic_chain.m_d  = 20 # amu
+atomic_chain.m_c  = 20 # amu
+atomic_chain.spacing = 5.5e-10 
+atomic_chain.num_unitcells = N_unitcells
+atomic_chain.offset = AC_x AC_y AC_z
+
+atomic_chain.initialize_charge_ditribution = 0
+atomic_chain.flag_write_charge_components = 0
+
+atomic_chain.contact_mu_specified = 1
+atomic_chain.contact_mu = Ef Ef
+atomic_chain.contact_T  = 298. 298.
+
+atomic_chain.contact_Fermi_level = Ef
+atomic_chain.E_valence_min = -10
+atomic_chain.E_pole_max    = 3
+atomic_chain.eq_integration_pts = 30 30 30
+atomic_chain.noneq_integration_pts = 100
+
+atomic_chain.write_at_iter = 1
+
+# decimation technique
+atomic_chain.use_decimation=1 
+atomic_chain.decimation_max_iter=50 
+atomic_chain.decimation_rel_error=1e-5 
+atomic_chain.decimation_layers=100
+#####################################

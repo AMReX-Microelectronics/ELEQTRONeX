@@ -233,6 +233,7 @@ class c_NEGF_Common : protected MatrixBlock<T>, private c_IntegrationPath
     void Print_RecursiveOptimizationParams();
 
     void Allocate_ArraysForHamiltonian();
+    void Allocate_ArraysForContactHamiltonian();
     void Allocate_ArraysForLeadSpecificQuantities();
     void Allocate_ArraysForGreensAndSpectralFunction();
     void Allocate_ArraysForChargeAndCurrent();
@@ -320,8 +321,7 @@ class c_NEGF_Common : protected MatrixBlock<T>, private c_IntegrationPath
                                   const RealTable1D &n_curr_in_data);
 
     virtual void Compute_SurfaceGreensFunction(MatrixBlock<T> &gr,
-                                               const ComplexType E,
-                                               const ComplexType U);
+                                               const ComplexType EmU);
 
     void Write_Current(const int step, const int total_iterations_in_step,
                        const amrex::Real avg_intg_pts);
@@ -372,6 +372,10 @@ class c_NEGF_Common : protected MatrixBlock<T>, private c_IntegrationPath
     BlkTable1D h_Hb_loc_data;
     BlkTable1D h_Hc_loc_data;
     BlkTable1D h_tau_glo_data;
+
+    /*Tables required to store contact Hamiltonian */
+    BlkTable1D h_HcontactAlpha_loc_data;
+    BlkTable1D h_HcontactBeta_loc_data;
 
     /*Tables and params required to store essential observables */
     RealTable1D h_U_loc_data;
@@ -491,6 +495,7 @@ class c_NEGF_Common : protected MatrixBlock<T>, private c_IntegrationPath
     virtual int get_offDiag_repeatBlkSize() = 0;
     virtual void Define_MPI_BlkType() = 0;
     virtual void Construct_Hamiltonian() = 0;
+    virtual void Construct_ContactHamiltonian() = 0;
 
     void DecimationTechnique(MatrixBlock<T> &gr, const ComplexType EmU);
 

@@ -41,6 +41,7 @@ class c_CNT : public c_NEGF_Common<ComplexType[BLOCK_SIZE]>
     virtual void Set_MaterialSpecificParameters() final;
     virtual void Print_MaterialSpecificReadData() final;
     virtual void Construct_Hamiltonian() final;
+    virtual void Construct_ContactHamiltonian() final;
     virtual void Define_ContactInfo() final;
     virtual void Define_MPI_BlkType() final;
 
@@ -75,8 +76,7 @@ class c_CNT : public c_NEGF_Common<ComplexType[BLOCK_SIZE]>
     virtual int get_offDiag_repeatBlkSize() final { return 2; }
 
     virtual void Compute_SurfaceGreensFunction(MatrixBlock<BlkType> &gr,
-                                               const ComplexType E,
-                                               const ComplexType U) final;
+                                               const ComplexType EmU) final;
 
    public:
     static int get_1D_site_id(int par_id_local_to_NS)

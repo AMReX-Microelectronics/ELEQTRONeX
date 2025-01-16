@@ -323,9 +323,8 @@ void c_CNT::Construct_Hamiltonian()
     {
         if (i % offDiag_repeatBlkSize == 0)
         {
-            h_Hb(i) = -1 * beta; /*negative sign because (E[I] - [H]) will have
-                                    negative B and C*/
-            h_Hc(i) = -1 * beta;
+            h_Hb(i) = -1.*beta; /* negative sign because we are storing -H0 */
+            h_Hc(i) = -1.*beta;
         }
         else
         {
@@ -334,6 +333,39 @@ void c_CNT::Construct_Hamiltonian()
         }
     }
 }
+
+
+void c_CNT::Construct_ContactHamiltonian()
+{
+    /* Here we define the right contact Hamiltonian with
+     *
+     * H_right = | Alpha0  Beta0                                  |
+     *           | Beta0^D Alpha1  Beta1                          |
+     *           |         Beta1^D Alpha2  Beta2                  |
+     *           |                 Beta2^D Alpha3  Beta3          |
+     *           |                         Beta3^D Alpha4  Beta4  |
+     *           |                                 Beta4^D Alpha0 |
+     *
+     * Alpha, Beta size: decimation layers
+     * Alpha, Beta have size decimation layers.
+     * In the above example there are 5 decimation layers.
+     */
+    auto const &h_HcontactAlpha = h_HcontactAlpha_loc_data.table();
+    auto const &h_HcontactBeta  = h_HcontactBeta_loc_data.table();
+    auto const &h_Hb = h_Hb_loc_data.const_table();
+
+    for (std::size_t i = 0; i < decimation_layers; ++i)
+    {
+        std::size_t j = i % offDiag_repeatBlkSize;
+        h_HcontactBeta(i) = -1.*h_Hb(j);
+    }
+
+    for (std::size_t i = 0; i < decimation_layers; ++i)
+    {
+        h_HcontactAlpha(i) = 0;
+    }
+}
+
 
 void c_CNT::Define_ContactInfo()
 {
@@ -352,16 +384,14 @@ void c_CNT::Define_ContactInfo()
 }
 
 void c_CNT::Compute_SurfaceGreensFunction(MatrixBlock<BlkType> &gr,
-                                          const ComplexType E,
-                                          const ComplexType U)
+                                          const ComplexType EmU)
 {
     if (use_decimation)
     {
-        c_NEGF_Common<BlkType>::DecimationTechnique(gr, E - U);
+        c_NEGF_Common<BlkType>::DecimationTechnique(gr, EmU);
     }
     else
     {
-        ComplexType EmU = E - U;
         auto EmU_sq = pow(EmU, 2.);
         auto gamma_sq = pow(gamma, 2.);
 

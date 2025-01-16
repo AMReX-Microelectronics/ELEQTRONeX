@@ -1279,6 +1279,8 @@ void c_NEGF_Common<T>::Initialize_NEGF(const std::string common_foldername_str,
 
     Construct_Hamiltonian();
 
+    if(use_decimation) Construct_ContactHamiltonian();
+
     Define_ContactInfo();
 
     amrex::Print() << "#####* Initially defining energy limits:\n";
@@ -1430,6 +1432,28 @@ void c_NEGF_Common<T>::Allocate_ArraysForHamiltonian()
 
     h_Hc_loc_data.resize({0}, {offDiag_repeatBlkSize}, The_Pinned_Arena());
     SetVal_Table1D(h_Hc_loc_data, zero);
+
+}
+
+template <typename T>
+void c_NEGF_Common<T>::Allocate_ArraysForContactHamiltonian()
+{
+    /* H_left  = | Alpha0  Beta4                                  |
+     *           | Beta4^D Alpha4  Beta3                          |
+     *           |         Beta3^D Alpha3  Beta2                  |
+     *           |                 Beta2^D Alpha2  Beta1          |
+     *           |                         Beta1^D Alpha1  Beta0  |
+     *           |                                 Beta0^D Alpha0 |
+     * Alpha, Beta size: decimation layers
+     */
+    
+    ComplexType zero(0., 0.);
+    h_HcontactAlpha_loc_data.resize({0}, {decimation_layers-1}, The_Pinned_Arena());
+    SetVal_Table1D(h_HcontactAlpha_loc_data, zero);
+
+    h_HcontactBeta_loc_data.resize({0}, {decimation_layers-1}, The_Pinned_Arena());
+    SetVal_Table1D(h_HcontactBeta_loc_data, zero);
+
 }
 
 template <typename T>
@@ -1444,23 +1468,25 @@ void c_NEGF_Common<T>::Compute_CondensedHamiltonian(CondensedHamiltonian &CondH,
 
     BlkTable1D H_tilde_data({0}, {P - 1});
     auto const &H_tilde = H_tilde_data.table();
-    auto const &Hb = h_Hb_loc_data.table();
+
+    auto const &HcontactAlpha = h_HcontactAlpha_loc_data.table();
+    auto const &HcontactBeta = h_HcontactBeta_loc_data.table();
 
     MatrixBlock<T> EmUI;
     EmUI.SetDiag(EmU);  // This is (E-U)I
-
-    H_tilde(P - 1).SetDiag(1. / EmU);  // This is (P-1) element of [(E-U)I]^-1
+    auto temp = EmUI - HcontactAlpha(P-1);
+    H_tilde(P-1) = temp.Inverse(); // This is (P-1) element of [(E-U)I - contact_alpha]^-1
 
     auto H_tilde_kP = H_tilde(P - 1);  // This is H_tilde(P-1)(P-1)
 
     for (int k = P - 2; k >= 1; --k)
     {
-        int j = k % offDiag_repeatBlkSize;
-        auto temp1 = EmUI - 1. * Hb(j) * H_tilde(k + 1) * Hb(j).Dagger();
+        auto temp1 = EmUI - HcontactAlpha(k) 
+                          - HcontactBeta(k) * H_tilde(k + 1) * HcontactBeta(k).Dagger();
 
         H_tilde(k) = temp1.Inverse();
 
-        H_tilde_kP = H_tilde(k) * Hb(j) * H_tilde_kP;
+        H_tilde_kP = H_tilde(k) * HcontactBeta(k) * H_tilde_kP;
     }
     // here H_tilde_kP is H_tilde_1P
 
@@ -1468,19 +1494,17 @@ void c_NEGF_Common<T>::Compute_CondensedHamiltonian(CondensedHamiltonian &CondH,
 
     for (int k = 2; k < P; ++k)
     {
-        int j = (k - 1) % offDiag_repeatBlkSize;
-        C_tilde_kk = H_tilde(k) + H_tilde(k) * Hb(j).Dagger() * C_tilde_kk *
-                                      Hb(j) * H_tilde(k);
+        C_tilde_kk = H_tilde(k) + H_tilde(k) * HcontactBeta(k-1).Dagger() * C_tilde_kk *
+                                      HcontactBeta(k-1) * H_tilde(k);
     }
     /* Here, C_tilde_kk = C_tilde_(P-1)(P-1)
      * and,  C_tilde_1P = H_tilde_1P = H_tilde_kP
      *       C_tilde_11 = H_tilde(1)
      */
 
-    int id = (P - 1) % offDiag_repeatBlkSize;
-    Xi_s = Hb(0) * H_tilde(1) * Hb(0).Dagger();
-    Xi = Xi_s + Hb(id) * C_tilde_kk * Hb(id).Dagger();
-    Pi = Hb(0) * H_tilde_kP * Hb(id);
+    Xi_s = HcontactAlpha(0) + HcontactBeta(0) * H_tilde(1) * HcontactBeta(0).Dagger();
+    Xi = Xi_s + HcontactBeta(P-1) * C_tilde_kk * HcontactBeta(P-1).Dagger();
+    Pi = HcontactBeta(0) * H_tilde_kP * HcontactBeta(P-1);
 
     /* For P=2, as an example,
      *
@@ -1645,6 +1669,7 @@ template <typename T>
 void c_NEGF_Common<T>::Allocate_Arrays()
 {
     Allocate_ArraysForHamiltonian();
+    if(use_decimation) Allocate_ArraysForContactHamiltonian();
     Allocate_ArraysForLeadSpecificQuantities();
     Allocate_ArraysForGreensAndSpectralFunction();
     Allocate_ArraysForChargeAndCurrent();
@@ -4154,10 +4179,9 @@ void c_NEGF_Common<T>::DecimationTechnique(MatrixBlock<T> &gr,
 
 template <typename T>
 void c_NEGF_Common<T>::Compute_SurfaceGreensFunction(MatrixBlock<T> &gr,
-                                                     const ComplexType E,
-                                                     ComplexType U)
+                                                     const ComplexType EmU)
 {
-    DecimationTechnique(gr, E - U);
+    DecimationTechnique(gr, EmU);
     // amrex::Print() << "Using decimation, gr: " << gr << "\n";
 }
 
@@ -4171,7 +4195,7 @@ void c_NEGF_Common<T>::get_Sigma_at_contacts(BlkTable1D &h_Sigma_contact_data,
     for (std::size_t c = 0; c < NUM_CONTACTS; ++c)
     {
         MatrixBlock<T> gr;
-        Compute_SurfaceGreensFunction(gr, E, U_contact[c]);
+        Compute_SurfaceGreensFunction(gr, E-U_contact[c]);
         h_Sigma(c) = h_tau(c) * gr * h_tau(c).Dagger();
     }
 }
