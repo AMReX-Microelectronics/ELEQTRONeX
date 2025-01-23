@@ -1,5 +1,5 @@
 ################
-# 10 nm cnt with single point charge located above center of CNT
+# 100 nm cnt on 10 nm thick SiO2, point charge away from CNT. Nonperiodic.
 ################
 
 ################
@@ -13,36 +13,36 @@ amrex.the_arena_is_managed=1
 ##### Some Important Params ####
 ################################
 my_constants.gx = 1
-my_constants.gy = 512
-my_constants.gz = 1
+my_constants.gy = 4
+my_constants.gz = 2
 
 my_constants.num_CNTs = 1
-my_constants.periodicity_factor = 14.5 #corresponds to 24.7 nm width
+my_constants.periodicity_factor = 7.5 #1.875 corresponds to 3.195 nm (smallest periodicity distance)
 
-my_constants.Channel_unitcells = 704
-my_constants.Overlap_unitcells = 32
+my_constants.Channel_unitcells = 234
+my_constants.Overlap_unitcells = 11
 
 my_constants.Vds = 0.   #Drain-Source voltage [V]
-my_constants.Vgs_min = -10
-my_constants.Vgs_max = 0
-my_constants.Nsteps =  21
+my_constants.Vgs_min = -2
+my_constants.Vgs_max = 1
+my_constants.Nsteps =  31
 #my_constants.dt = 1
 my_constants.dt = 1./(Nsteps-1)
 
 
-plot.folder_name = /global/cfs/projectdirs/m4540/eXstatic/point_charge/planar_CNTFET_Francois
+plot.folder_name = /global/cfs/projectdirs/m4540/eXstatic/point_charge/planar_Cao
 #plot.folder_name = planar_CNTFET_10nm
-plot.write_after_init = 0
+plot.write_after_init = 1
 plot.write_interval = 10000
 
-restart = 0
-restart_step = 0
-NS_default.initialize_charge_distribution = 0
 NS_default.flag_compute_DOS = 1 #DOS, Transmission, Conductance
 NS_default.flag_write_LDOS = 0
 NS_default.flag_write_LDOS_iter = 0
 NS_default.write_LDOS_iter_period = 10
 
+restart = 0
+restart_step = 0
+NS_default.initialize_charge_distribution = 0
 ##################################
 ##### USER DEFINED CONSTANTS #####
 ##################################
@@ -66,7 +66,7 @@ my_constants.N_unitcells = Channel_unitcells + 2*Overlap_unitcells + 2*Gap_unitc
 
 my_constants.Ly_offset_unitcells = 0
 
-my_constants.cells_per_unitcell =8 #cell_size = 0.0355 nm
+my_constants.cells_per_unitcell = 8 #cell_size = 0.0355 nm
 
 my_constants.unitcells_per_D_CN = ceil((R_CN*2)/(L_unitcell)) #unitcells per diameter
 
@@ -74,7 +74,7 @@ my_constants.periodicity_length = periodicity_factor * unitcells_per_D_CN * L_un
 
 my_constants.width_factor  = (num_CNTs)*periodicity_factor #1.875 corresponds to 3.195 nm (smallest periodicity distance)
 
-my_constants.height_factor = ceil(abs(Lz_min)/Lx + 0.5)*width_factor
+my_constants.height_factor = ceil(abs(Lz_min)/Lx + 0.25)*width_factor
 
 my_constants.ny = (N_unitcells + Ly_offset_unitcells) * cells_per_unitcell
 my_constants.nx =  width_factor  * unitcells_per_D_CN * cells_per_unitcell
@@ -119,7 +119,7 @@ my_constants.CM_height = 5.e-9  + MGO_gap
 ### gate oxide ###
 ##################
 
-my_constants.GO_total_thickness = 50.e-9
+my_constants.GO_total_thickness = 10.e-9
 my_constants.GO_bottom = Lz_min - dz/5.
 my_constants.GO_top    = GO_bottom + GO_total_thickness + dz/5.
 my_constants.GO_middle = GO_top - CM_height
@@ -170,37 +170,31 @@ domain.blocking_factor = nx/gx ny/gy nz/gz
 domain.prob_lo = -Lx/2. -Ly/2.  Lz_min
 domain.prob_hi =  Lx/2.  Ly/2.  Lz_max
 
-domain.is_periodic = 1 0 0
+domain.is_periodic = 0 0 0
 
 domain.coord_sys = cartesian
 
 ##############################
 ###### Point Charges #########
 ##############################
-my_constants.ZOffset = GO_top - dz
-#
+
 charge_density_source.type = point_charge
-pc.flag_vary_occupation = 1
-pc.mixing_factor = 0.1
-pc.offset =  (-Lx/2. + 10*dx) (-Ly/2. + CM_length) (ZOffset)
-pc.scaling = (Lx - 20*dx) (Ly - 2*CM_length) (0)
-pc.Et = 2
-pc.V0 = 0.5
+pc.flag_vary_occupation = 0
+pc.Et = -1
+pc.V0 = 10
 pc.default_charge_unit = 1
 pc.default_occupation = 1
 
-pc.flag_random_positions = 1
-pc.charge_density=0.04e18 #cubic meter
-pc.random_seed = 0
+my_constants.Zoffset=0
 
-#pc.num = 1
-#pc_1.location = CN_x CN_y (CN_z + R_CN + 1e-9)
+pc.num = 1
+pc_1.location = CN_x CN_y (GO_top - Zoffset)
 
 #################################
 ###### BOUNDARY CONDITIONS ######
 #################################
-boundary.hi = per neu(0.) neu(0.)
-boundary.lo = per neu(0.) dir(Gate)
+boundary.hi = neu(0.) neu(0.) neu(0.)
+boundary.lo = neu(0.) neu(0.) dir(Gate)
 
 boundary.Gate_function = "SV + Vgs_max - (Vgs_max-Vgs_min) * t"
 
@@ -239,18 +233,18 @@ diag.specify_using_eb = 1
 diag.objects = X Y Z
 X.geom_type = plane
 X.direction = 0
-X.location = 0.00000
-X.fields_to_plot = phi
+X.location = 0.0
+X.fields_to_plot = phi charge_density
 
 Y.geom_type = plane
 Y.direction = 1
-Y.location = 0.00000
-Y.fields_to_plot = phi  
+Y.location = 0.0
+Y.fields_to_plot = phi charge_density 
 
 Z.geom_type = plane
 Z.direction = 2
-Z.location = ZOffset
-Z.fields_to_plot = charge_density 
+Z.location = 0.0
+Z.fields_to_plot = phi charge_density 
 
 #diag.objects = Surf1
 #Surf1.geom_type = cylinder

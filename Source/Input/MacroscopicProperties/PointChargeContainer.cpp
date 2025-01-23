@@ -97,7 +97,7 @@ void c_PointChargeContainer::Write_OutputFile()
 
 void c_PointChargeContainer::Check_PositionBounds(
     const amrex::Vector<amrex::Vector<amrex::Real>> &particles,
-    const amrex::Vector<amrex::Real> &vec_offset,
+    const amrex::Vector<amrex::Real> &vec_min_bound,
     const amrex::Vector<amrex::Real> &vec_max_bound)
 {
     auto &rCode = c_Code::GetInstance();
@@ -110,7 +110,7 @@ void c_PointChargeContainer::Check_PositionBounds(
     for (int d = 0; d < AMREX_SPACEDIM; ++d)
     {
         minID[d] = static_cast<int>(
-            amrex::Math::floor((vec_offset[d] - plo[d] - dx[d] * 0.5) / dx[d]));
+            amrex::Math::floor((vec_min_bound[d] - plo[d] - dx[d] * 0.5) / dx[d]));
         maxID[d] = static_cast<int>(amrex::Math::floor(
             (vec_max_bound[d] - plo[d] - dx[d] * 0.5) / dx[d]));
     }
@@ -142,25 +142,52 @@ void c_PointChargeContainer::Read_PointCharges()
 {
     amrex::ParmParse pp_main("pc");
 
-    amrex::Vector<amrex::Real> vec_offset(AMREX_SPACEDIM, 0.0);
-    queryArrWithParser(pp_main, "offset", vec_offset, 0, AMREX_SPACEDIM);
+    auto &rCode = c_Code::GetInstance();
+    auto &rGprop = rCode.get_GeometryProperties();
+    const auto &plo = rGprop.geom.ProbLoArray();
+    const auto &phi = rGprop.geom.ProbHiArray();
+    const auto &dx = rGprop.geom.CellSizeArray();
+
+    amrex::Vector<amrex::Real> vec_offset(AMREX_SPACEDIM, 0);
+    bool is_offset_specified = 
+        queryArrWithParser(pp_main, "offset", vec_offset, 0, AMREX_SPACEDIM);
 
     amrex::Print() << "pc.offset / (nm): ";
     for (const auto &v : vec_offset) amrex::Print() << v * 1e9 << " ";
     amrex::Print() << "\n";
 
-    amrex::Vector<amrex::Real> vec_scaling(AMREX_SPACEDIM, 1.0);
-    queryArrWithParser(pp_main, "scaling", vec_scaling, 0, AMREX_SPACEDIM);
+    amrex::Vector<amrex::Real> vec_scaling(AMREX_SPACEDIM, 1);
+    bool is_scaling_specified = 
+        queryArrWithParser(pp_main, "scaling", vec_scaling, 0, AMREX_SPACEDIM);
 
     amrex::Print() << "pc.scaling / (nm): ";
     for (const auto &v : vec_scaling) amrex::Print() << v * 1e9 << " ";
     amrex::Print() << "\n";
 
-    amrex::Vector<amrex::Real> vec_max_bound(AMREX_SPACEDIM, 1.0);
+    // set min and max bounds to contain all particles
+    amrex::Vector<amrex::Real> vec_min_bound(AMREX_SPACEDIM);
+    amrex::Vector<amrex::Real> vec_max_bound(AMREX_SPACEDIM);
+
+    if(is_offset_specified) vec_min_bound = vec_offset;
+    else for(int d = 0; d < AMREX_SPACEDIM; ++d) vec_min_bound[d] = plo[d] + dx[d];
+
+    if(is_scaling_specified) 
+    {
+        for(int d = 0; d < AMREX_SPACEDIM; ++d) 
+            vec_max_bound[d] = vec_offset[d] + vec_scaling[d];
+    }
+    else for(int d = 0; d < AMREX_SPACEDIM; ++d) vec_max_bound[d] = phi[d];
+
+    amrex::Print() << "min bound / (nm): ";
+    for (int d = 0; d < AMREX_SPACEDIM; ++d)
+    {
+        amrex::Print() << vec_min_bound[d] * 1e9 << " ";
+    }
+    amrex::Print() << "\n";
+
     amrex::Print() << "max bound / (nm): ";
     for (int d = 0; d < AMREX_SPACEDIM; ++d)
     {
-        vec_max_bound[d] = vec_offset[d] + vec_scaling[d];
         amrex::Print() << vec_max_bound[d] * 1e9 << " ";
     }
     amrex::Print() << "\n";
@@ -241,7 +268,7 @@ void c_PointChargeContainer::Read_PointCharges()
         }
     }
 
-    Check_PositionBounds(particles, vec_offset, vec_max_bound);
+    Check_PositionBounds(particles, vec_min_bound, vec_max_bound);
 
     for (int s = 0; s < num; ++s)
     {

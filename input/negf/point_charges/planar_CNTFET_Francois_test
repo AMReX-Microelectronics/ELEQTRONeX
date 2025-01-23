@@ -13,11 +13,11 @@ amrex.the_arena_is_managed=1
 ##### Some Important Params ####
 ################################
 my_constants.gx = 2
-my_constants.gy = 1024
+my_constants.gy = 128
 my_constants.gz = 2
 
 my_constants.num_CNTs = 1
-my_constants.periodicity_factor = 14.5 #corresponds to 24.7 nm width
+my_constants.periodicity_factor = 7.25 #14.5 corresponds to 24.7 nm width
 
 my_constants.Channel_unitcells = 704
 my_constants.Overlap_unitcells = 32
@@ -30,19 +30,19 @@ my_constants.Nsteps =  21
 my_constants.dt = 1./(Nsteps-1)
 
 
-plot.folder_name = /global/cfs/projectdirs/m4540/eXstatic/point_charge/planar_CNTFET_Francois_test
+plot.folder_name = /global/cfs/projectdirs/m4540/eXstatic/point_charge/planar_CNTFET_Francois
 #plot.folder_name = planar_CNTFET_10nm
 plot.write_after_init = 0
 plot.write_interval = 10000
 
-transport.flag_compute_DOS = 1 #DOS, Transmission, Conductance
-transport.flag_write_LDOS = 1
-transport.flag_write_LDOS_iter = 0
-transport.write_LDOS_iter_period = 10
-
 restart = 0
 restart_step = 0
 NS_default.initialize_charge_distribution = 0
+NS_default.flag_compute_DOS = 1 #DOS, Transmission, Conductance
+NS_default.flag_write_LDOS = 1
+NS_default.flag_write_LDOS_iter = 0
+NS_default.write_LDOS_iter_period = 10
+
 ##################################
 ##### USER DEFINED CONSTANTS #####
 ##################################
@@ -74,7 +74,7 @@ my_constants.periodicity_length = periodicity_factor * unitcells_per_D_CN * L_un
 
 my_constants.width_factor  = (num_CNTs)*periodicity_factor #1.875 corresponds to 3.195 nm (smallest periodicity distance)
 
-my_constants.height_factor = 3*width_factor
+my_constants.height_factor = ceil(abs(Lz_min)/Lx + 0.5)*width_factor
 
 my_constants.ny = (N_unitcells + Ly_offset_unitcells) * cells_per_unitcell
 my_constants.nx =  width_factor  * unitcells_per_D_CN * cells_per_unitcell
@@ -170,7 +170,7 @@ domain.blocking_factor = nx/gx ny/gy nz/gz
 domain.prob_lo = -Lx/2. -Ly/2.  Lz_min
 domain.prob_hi =  Lx/2.  Ly/2.  Lz_max
 
-domain.is_periodic = 0 0 0
+domain.is_periodic = 1 0 0
 
 domain.coord_sys = cartesian
 
@@ -199,8 +199,8 @@ pc.random_seed = 0
 #################################
 ###### BOUNDARY CONDITIONS ######
 #################################
-boundary.hi = neu(0.) neu(0.) neu(0.)
-boundary.lo = neu(0.) neu(0.) dir(Gate)
+boundary.hi = per neu(0.) neu(0.)
+boundary.lo = per neu(0.) dir(Gate)
 
 boundary.Gate_function = "SV + Vgs_max - (Vgs_max-Vgs_min) * t"
 
@@ -289,14 +289,12 @@ transport.NS_type_default = CNT
 transport.NS_gather_field = phi            
 transport.NS_deposit_field  = charge_density 
 transport.NS_initial_deposit_value  = 1.e-3
+transport.selfconsistency_algorithm = broyden_second
 transport.Broyden_fraction = 0.1
 transport.Broyden_max_norm = 1.e-5
 transport.Broyden_norm_type = relative
-transport.selfconsistency_algorithm = broyden_second
-transport.reset_with_previous_charge_distribution = 1
-transport.initialize_inverse_jacobian = 0
-transport.gate_terminal_type = Boundary
 transport.Broyden_threshold_maxstep = 100
+transport.reset_with_previous_charge_distribution = 1
 
 NS_default.num_unitcells = N_unitcells
 NS_default.rotation_order = Z
@@ -306,6 +304,7 @@ NS_default.contact_Fermi_level = Ef
 NS_default.contact_mu_specified = 1
 NS_default.contact_mu = Ef (Ef - Vds)
 NS_default.contact_T  = 298. 298.
+NS_default.gate_terminal_type = Boundary
 NS_default.Fermi_tail_factors = 14 14
 NS_default.eq_integration_pts = 30 30 30
 NS_default.flag_compute_flatband_dos = 0

@@ -1,0 +1,345 @@
+################
+# Topgate Configuration, CONTROL, no point charge
+################
+
+################
+##### FLAGS ####
+################
+use_electrostatic = 1
+use_transport = 1
+amrex.the_arena_is_managed=1
+
+################################
+##### Some Important Params ####
+################################
+my_constants.gx = 2
+my_constants.gy = 16
+my_constants.gz = 2
+
+my_constants.num_CNTs = 1
+#my_constants.periodicity_factor = 2 #corresponds to ~294 CNTs/micron, 3.408 nm spacing
+my_constants.periodicity_factor = 1.5 #corresponds to ~400 CNTs/micron, 2.5 nm spacing
+my_constants.periodicity_length = periodicity_factor * unitcells_per_D_CN * L_unitcell
+
+
+my_constants.Vds = 0.   #Drain-Source voltage [V]
+my_constants.Vgs_min = -1
+my_constants.Vgs_max = 0.6
+my_constants.Nsteps = 13
+my_constants.dt = 1./(Nsteps-1)
+
+
+plot.folder_name = /global/cfs/projectdirs/m4540/eXstatic/point_charge/topgate_CNTFET/dummy
+plot.write_after_init = 0
+plot.write_interval = 10000
+
+NS_default.flag_compute_DOS = 1 #DOS, Transmission, Conductance
+NS_default.flag_write_LDOS = 0
+NS_default.flag_write_LDOS_iter = 0
+NS_default.write_LDOS_iter_period = 10
+
+restart = 0
+restart_step = 0
+NS_default.initialize_charge_distribution = 0
+NS_default.write_at_iter = 0
+##################################
+##### USER DEFINED CONSTANTS #####
+##################################
+
+### Physical and Other Constants ###
+####################################
+
+my_constants.q = 1.602e-19
+my_constants.epsilon_0 = 8.8541878128e-12
+my_constants.pi = 3.141592653589793
+
+my_constants.epsilon_GO     = 25*epsilon_0 #HfO2
+my_constants.epsilon_S      = 3.9*epsilon_0 #SiO2
+
+my_constants.SV = 0.      #source voltage [V]
+my_constants.Ef = -1    #Palladium Contact Fermi level [eV] 
+
+my_constants.MGO_gap = 10*dx + dx/5. #gap between metal and gate oxide
+my_constants.MB_gap  = 5*dx #2*dx/5.
+
+### Total domain dimensions ###
+###############################
+my_constants.N_unitcells = Channel_unitcells + 2*Overlap_unitcells
+
+my_constants.length_unitcells = ceil((FET_length*1e9/0.426) / 8) * 8
+my_constants.height_unitcells = ceil(((FET_height*1e9/0.426)+4) / 16) * 16 
+
+my_constants.width_factor  = num_CNTs*periodicity_factor #1.875 corresponds to 3.195 nm (smallest periodicity distance)
+
+my_constants.cells_per_unitcell = 16 #cell_size = 0.0355 nm
+my_constants.unitcells_per_D_CN = ceil((R_CN*2)/(L_unitcell)) #unitcells per diameter
+
+my_constants.nx =  width_factor * unitcells_per_D_CN * cells_per_unitcell
+my_constants.ny =  length_unitcells * cells_per_unitcell
+my_constants.nz =  height_unitcells * cells_per_unitcell
+
+my_constants.Lx = width_factor * unitcells_per_D_CN  * L_unitcell
+my_constants.Ly = length_unitcells * L_unitcell 
+my_constants.Lz = height_unitcells * L_unitcell 
+
+my_constants.Lz_min = -(R_CN + small_gap + S_thickness)
+my_constants.Lz_max = Lz + Lz_min
+
+my_constants.dx = Lx/nx
+my_constants.dy = Ly/ny
+my_constants.dz = Lz/nz
+
+### Carbon nanotube ###
+#######################
+
+my_constants.m_index = 20
+my_constants.n_index = 0
+
+my_constants.bond_length = 0.142e-9
+my_constants.small_gap = 0.3e-9 #gap between nanotube and the contacts
+my_constants.L_unitcell = 3*bond_length #0.426e-9
+
+#cnt center
+my_constants.CN_z = 0.
+my_constants.CN_x = 0.
+my_constants.CN_y = 0.
+
+my_constants.Channel_unitcells = ((G_length + 2*GO_thickness)*1e9/0.426)
+my_constants.Channel_length = (G_length + 2*GO_thickness)
+
+#my_constants.Overlap_unitcells = ((CM_length - CM_y_thickness)*1e9/0.426) - 5
+my_constants.Overlap_unitcells = ((Ly - G_length - 2*GO_thickness)*1e9/0.426/2)
+
+my_constants.R_CN = bond_length*sqrt(3.*(m_index*m_index + n_index*n_index + m_index*n_index))/(2*pi)  #radius
+
+### substrate ###
+#################
+
+my_constants.S_thickness = 10.e-9 #10e-9
+my_constants.S_bottom    = Lz_min - dz/5.
+my_constants.S_top       = S_bottom + S_thickness + dz/5.
+
+### contact metal ###
+#####################
+
+my_constants.CM_length      = 40e-9 #40e-9 #defined as Lcon/2 
+my_constants.CM_z_thickness = 20e-9 #20e-9
+my_constants.CM_y_thickness = 0.0 #5e-9
+
+my_constants.CM_bottom  = S_top + MGO_gap
+my_constants.CM_edgetop = S_top + R_CN*2 + 2*small_gap
+my_constants.CM_top = CM_edgetop + CM_z_thickness
+
+my_constants.CM_width  = Lx
+
+### gate oxide ###
+##################
+
+my_constants.GO_thickness  = 5e-9 #5e-9 #defined as Lsp
+my_constants.GO_bottom     = CM_edgetop + MGO_gap
+my_constants.GO_top        = CM_top + GO_thickness
+my_constants.GO_width      = CM_width
+my_constants.GO_length     = G_length + 2*GO_thickness + CM_length
+
+### gate ###
+############
+my_constants.G_length = 85e-9  #85e-9 #defined as Lg 
+my_constants.G_height = 30e-9  #30e-9 #defined
+my_constants.G_width  = CM_width
+
+my_constants.G_bottom = CM_edgetop + GO_thickness
+my_constants.G_top    = G_bottom + G_height
+
+### FET ###
+###########
+my_constants.FET_length  = G_length + 2*GO_thickness  + 2*CM_length #FET length
+my_constants.FET_height  = S_thickness + GO_thickness + G_height + 2*(R_CN+small_gap)
+my_constants.FET_width   = CM_width
+
+##############################
+###### Point Charges #########
+##############################
+charge_density_source.type = point_charge
+pc.flag_vary_occupation = 0
+pc.default_charge_unit = 1
+pc.default_occupation = 1
+
+my_constants.Zoffset=0.1e-9
+my_constants.Zplane=GO_bottom + Zoffset
+
+pc.num = 1
+pc_1.location = CN_x CN_y (GO_bottom + Zoffset)
+
+##################################################
+###### TIME DEPENDENT SIMULATION PROPERTIES ######
+##################################################
+
+timestep = dt
+steps = Nsteps
+
+####################################
+###### EMBEDDED BOUNDARIES #########
+####################################
+
+domain.embedded_boundary = 1  #options: 1=true, 0=false (default)
+domain.specify_using_eb2 = 0  #options: 1=true, 0=false (default)
+
+ebgeom.objects = Source Drain Gate
+ebgeom.specify_inhomo_dir = 1
+
+Source.geom_type    = cntfet_contact_rect
+Source.outer_box_lo = (-CM_width/2. - MB_gap) (-Ly/2. - MB_gap)             (CM_bottom)
+Source.outer_box_hi = ( CM_width/2. + MB_gap) (-FET_length/2. + CM_length) (CM_top)
+
+Source.inner_box_lo = (-CM_width/2. - MB_gap) (-Ly/2. - MB_gap + CM_y_thickness) (CM_bottom)
+Source.inner_box_hi = ( CM_width/2. + MB_gap) (-FET_length/2. + CM_length)      (CM_edgetop)
+Source.surf_soln    = SV 
+
+Drain.geom_type     = cntfet_contact_rect
+Drain.outer_box_lo  = (-CM_width/2. - MB_gap) (FET_length/2. - CM_length)  (CM_bottom)
+Drain.outer_box_hi  = ( CM_width/2. + MB_gap) (Ly/2. + MB_gap)              (CM_top)
+
+Drain.inner_box_lo   = (-CM_width/2. - MB_gap) (FET_length/2. - CM_length)      (CM_bottom)
+Drain.inner_box_hi   = ( CM_width/2. + MB_gap) (Ly/2. + MB_gap - CM_y_thickness) (CM_edgetop)
+Drain.surf_soln      = SV + Vds
+
+Gate.geom_type          = box
+Gate.box_lo             = (-G_width/2. - MB_gap) (-G_length/2.)    (G_bottom)
+Gate.box_hi             = ( G_width/2. + MB_gap) (G_length/2.)     (G_top)
+Gate.has_fluid_inside   = 0
+Gate.direction          = 1
+Gate.surf_soln_parser   = 1
+Gate.surf_soln_function = "SV + Vgs_max - (Vgs_max-Vgs_min) * t"
+
+#################################
+###### GEOMETRY PROPERTIES ######
+#################################
+domain.n_cell = nx ny nz
+domain.max_grid_size = nx/gx ny/gy nz/gz
+domain.blocking_factor = nx/gx ny/gy nz/gz
+
+domain.prob_lo = -Lx/2. -Ly/2.  Lz_min
+domain.prob_hi =  Lx/2.  Ly/2.  Lz_max
+
+domain.is_periodic = 1 0 0
+
+domain.coord_sys = cartesian
+
+#################################
+###### BOUNDARY CONDITIONS ######
+#################################
+boundary.hi = per(0.) neu(0.) neu(0.)
+boundary.lo = per(0.) neu(0.) neu(0.)
+
+####################################
+###### MACROSCOPIC PROPERTIES ######
+####################################
+macroscopic.fields_to_define = alpha epsilon charge_density phi atom_locations
+macroscopic.ghostcells_for_fields = alpha.0 epsilon.1 charge_density.1 phi.1  atom_locations.0
+
+macroscopic.alpha = 0.
+macroscopic.charge_density = 0.
+macroscopic.epsilon_function = "epsilon_0 + (epsilon_S - epsilon_0) * (z < S_top) + (epsilon_GO - epsilon_0) * (y > -GO_length/2.) * (y < GO_length/2.) * (z > GO_bottom) * (z < GO_top)"
+
+macroscopic.phi = 0.
+macroscopic.atom_locations = 0.
+
+#############################
+###### POST PROCESSING ######
+#############################
+
+#post_process.fields_to_process = vecField
+
+####################
+###### OUTPUT ######
+####################
+
+plot.fields_to_plot = epsilon.1 charge_density.1 phi.1 atom_locations #vecField 
+plot.rawfield_write_interval = 1000000
+
+########################
+###### DIAGNOSTICS #####
+########################
+use_diagnostics = 1
+
+diag.specify_using_eb = 1
+diag.objects = X_phi Z_rho Z_phi
+X_phi.geom_type = plane
+X_phi.direction = 0
+X_phi.location = 0.0
+X_phi.fields_to_plot = phi
+
+Z_rho.geom_type = plane
+Z_rho.direction = 2
+Z_rho.location = Zplane
+Z_rho.fields_to_plot = charge_density
+
+Z_phi.geom_type = plane
+Z_phi.direction = 2
+Z_phi.location = Zplane
+Z_phi.fields_to_plot = phi
+####################################
+###### MLMG SOLVER PROPERTIES ######
+####################################
+
+mlmg.ascalar=0
+mlmg.bscalar=1
+
+mlmg.soln   = phi
+mlmg.rhs    = charge_density
+mlmg.alpha  = alpha
+mlmg.beta   = epsilon
+
+mlmg.set_verbose=0
+mlmg.max_order=2
+mlmg.absolute_tolerance=0
+mlmg.relative_tolerance=1e-10
+
+#################
+###### NEGF #####
+#################
+transport.use_negf = 1
+
+transport.NS_num = num_CNTs
+transport.NS_type_default = CNT
+transport.NS_gather_field = phi            
+transport.NS_deposit_field  = charge_density 
+transport.NS_initial_deposit_value  = 1.e-3
+transport.selfconsistency_algorithm = broyden_second
+transport.Broyden_fraction = 0.1
+transport.Broyden_max_norm = 1.e-5
+transport.Broyden_norm_type = relative
+transport.Broyden_threshold_maxstep = 400
+transport.reset_with_previous_charge_distribution = 1
+
+NS_default.num_unitcells = N_unitcells
+NS_default.rotation_order = Z
+NS_default.rotation_angle_type = D
+NS_default.rotation_angles = 0 0 0.
+NS_default.contact_Fermi_level = Ef
+NS_default.contact_mu_specified = 1
+NS_default.contact_mu = Ef (Ef - Vds)
+NS_default.contact_T  = 298. 298.
+NS_default.gate_terminal_type = EB
+NS_default.Fermi_tail_factors = 15 15
+NS_default.eq_integration_pts = 60 60 60
+NS_default.flag_compute_flatband_dos = 1
+NS_default.flatband_dos_integration_pts = 1600
+NS_default.flatband_dos_integration_limits = -2. 2.
+NS_default.noneq_integration_pts = 400
+NS_default.flag_write_integrand = 0
+NS_default.flag_write_charge_components = 1
+NS_default.num_noneq_paths = 1
+NS_default.num_recursive_parts = 2
+#NS_default.charge_distribution_filename = <full filename>
+#NS_default.read_step =
+#NS_default.read_negf_foldername =
+NS_default.E_valence_min = -10
+NS_default.E_pole_max    = 3
+NS_default.E_zPlus_imag  = 1.e-6
+
+CNT_default.type_id = m_index n_index    
+CNT_default.acc = bond_length
+CNT_default.gamma = 2.5     
+
+NS_1.offset = (CN_x + (0/2.)*periodicity_length) CN_y CN_z
