@@ -10,6 +10,7 @@
 #include "../../Utils/CodeUtils/ParticleStructure.H"
 #include "NEGF/CNT.H"
 #include "NEGF/Graphene.H"
+#include "NEGF/AtomicChain.H"
 #include "Nanostructure_fwd.H"
 
 class c_Nanostructure_Base

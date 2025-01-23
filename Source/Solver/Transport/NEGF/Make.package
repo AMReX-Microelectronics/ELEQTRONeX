@@ -12,9 +12,11 @@ CEXE_headers += NEGF_Common.H
 
 CEXE_sources += CNT.cpp
 CEXE_sources += Graphene.cpp
+CEXE_sources += AtomicChain.cpp
 
 CEXE_headers += CNT.H
 CEXE_headers += Graphene.H
+CEXE_headers += AtomicChain.H
 
 VPATH_LOCATIONS += $(CODE_HOME)/Source/Solver/Transport/NEGF
 INCLUDE_LOCATIONS += $(CODE_HOME)/Source/Solver/Transport/NEGF

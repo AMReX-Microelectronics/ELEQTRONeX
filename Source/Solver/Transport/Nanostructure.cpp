@@ -17,6 +17,7 @@
 
 template class c_Nanostructure<c_CNT>;
 template class c_Nanostructure<c_Graphene>;
+template class c_Nanostructure<c_AtomicChain>;
 
 template <typename NSType>
 c_Nanostructure<NSType>::c_Nanostructure(

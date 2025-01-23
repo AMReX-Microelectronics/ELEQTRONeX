@@ -22,6 +22,7 @@ class c_Graphene : public c_NEGF_Common<ComplexType[BLOCK_SIZE][BLOCK_SIZE]>
     virtual void Print_MaterialSpecificReadData() final {}
 
     virtual void Construct_Hamiltonian() final {}
+    virtual void Construct_ContactHamiltonian() final {}
     virtual void Define_ContactInfo() final {}
     virtual void Define_MPI_BlkType() final{};
 

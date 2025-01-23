@@ -21,7 +21,8 @@ enum class s_NS_Type : int
 {
     CNT,
     Graphene,
-    Silicon
+    Silicon,
+    AtomicChain
 };
 enum class s_Algorithm_Type : int
 {
@@ -36,7 +37,10 @@ const std::map<std::string, s_NS_Type> c_TransportSolver::map_NSType_enum = {
     {"graphene", s_NS_Type::Graphene},
     {"Graphene", s_NS_Type::Graphene},
     {"silicon", s_NS_Type::Silicon},
-    {"Silicon", s_NS_Type::Silicon}};
+    {"Silicon", s_NS_Type::Silicon},
+    {"atomic_chain", s_NS_Type::AtomicChain},
+    {"Atomic_Chain", s_NS_Type::AtomicChain}
+};
 
 const std::map<std::string, s_Algorithm_Type>
     c_TransportSolver::map_AlgorithmType = {
@@ -309,6 +313,11 @@ int c_TransportSolver::Instantiate_Materials()
             {
                 amrex::Abort("NS_type silicon is not yet defined.");
             }
+            case s_NS_Type::AtomicChain:
+            {
+                Create_Nanostructure<c_AtomicChain>(name, NS_id_counter);
+                amrex::Abort("NS_type graphene is not yet defined.");
+            }
             default:
             {
                 amrex::Abort("NS_type " + Get_NS_type_str(name) +
@@ -529,12 +538,39 @@ void c_TransportSolver::Solve(const int step, const amrex::Real time)
     }
     else  // if not using electrostatics
     {
+        m_iter=1;
+        bool flag_update_terminal_bias=false;
+
+        // Part 1: Solve NEGF
         for (int c = 0; c < vp_NS.size(); ++c)
         {
-            RealTable1D RhoInduced; /*this is not correct but added just so
-                                       Solve_NEGF compiles*/
-            vp_NS[c]->Solve_NEGF(RhoInduced, 0, false);
+#ifdef AMREX_USE_GPU
+            total_intg_pts_in_all_iter += vp_NS[c]->Solve_NEGF(d_n_curr_out_data, 
+                    m_iter, flag_update_terminal_bias);
+#else
+            total_intg_pts_in_all_iter += vp_NS[c]->Solve_NEGF(h_n_curr_out_data, 
+                    m_iter, flag_update_terminal_bias);
+#endif
         }
+
+        // Part 2: Postprocess
+        amrex::Real time_for_postpro = amrex::second();
+        for (int c = 0; c < vp_NS.size(); ++c)
+        {
+            bool isIter = false;
+            vp_NS[c]->PostProcess(isIter, m_step);
+
+            Copy_DataToBeWrittenToHost(vp_NS[c]->Get_NanostructureID());
+
+            vp_NS[c]->Write_Output(
+                isIter, m_step, m_iter,
+                static_cast<amrex::Real>(total_intg_pts_in_all_iter) / m_iter,
+                h_n_curr_out_data, h_Norm_data);
+        }
+        amrex::Print() << "Time for postprocessing dos/current/writing data:   "
+                       << amrex::second() - time_for_postpro << "\n";
+
+        Reset_ForNextBiasStep();
     }
 }
 
@@ -712,7 +748,11 @@ void c_TransportSolver::Obtain_maximum_time(
 
 void c_TransportSolver::Reset_ForNextBiasStep()
 {
-    Reset_Broyden_Parallel();
+    auto &rCode = c_Code::GetInstance();
+    if (rCode.use_electrostatic)
+    {
+        Reset_Broyden_Parallel();
+    }
     MPI_Barrier(ParallelDescriptor::Communicator());
 }
 
