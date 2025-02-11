@@ -176,7 +176,8 @@ void c_TransportSolver::InitData()
 
     if (rCode.use_electrostatic) Group_ChargeDepositedByAllNS();
 
-    Set_Broyden_Parallel();
+    if (use_selfconsistent_potential) Set_Broyden_Parallel();
+    else Define_Only_ChargeDensityOut();
 }
 
 void c_TransportSolver::Read_ControlFlags(amrex::ParmParse &pp)
@@ -755,6 +756,62 @@ void c_TransportSolver::Reset_ForNextBiasStep()
     }
     MPI_Barrier(ParallelDescriptor::Communicator());
 }
+
+
+void c_TransportSolver::Define_CumulativeInfo_ForAllNS()
+{
+    /* Each process executes this function.
+     *
+     * Create the following:
+     * my_rank
+     * total_proc
+     * site_size_loc_all_NS
+     * site_size_loc_cumulative vector of size equal to all nanostructure.
+     */
+    total_proc = amrex::ParallelDescriptor::NProcs();
+    my_rank = amrex::ParallelDescriptor::MyProc();
+
+    site_size_loc_cumulative.resize(vp_NS.size() + 1);
+    site_size_loc_cumulative[0] = 0;
+
+    for (int c = 0; c < vp_NS.size(); ++c)
+    {
+        vp_NS[c]->Set_NumFieldSites_Local_NSOffset(site_size_loc_cumulative[c]);
+
+        site_size_loc_cumulative[c + 1] =
+            site_size_loc_cumulative[c] + vp_NS[c]->Get_NumFieldSites_Local();
+    }
+    site_size_loc_all_NS = site_size_loc_cumulative[vp_NS.size()];
+}
+
+
+void c_TransportSolver::Define_Only_ChargeDensityOut()
+{
+    Define_CumulativeInfo_ForAllNS();
+
+#ifdef AMREX_USE_GPU
+    d_n_curr_out_data.resize({0}, {site_size_loc_all_NS}, The_Arena());
+    d_Norm_data.resize({0}, {site_size_loc_all_NS}, The_Arena());
+
+    auto const &n_curr_out = d_n_curr_out_data.table();
+    auto const &Norm = d_Norm_data.table();
+
+    amrex::ParallelFor(site_size_loc_all_NS,
+                       [=] AMREX_GPU_DEVICE(int site) noexcept
+                       {
+                           n_curr_out(site) = 0.;
+                           Norm(site) = 0.;
+                       });
+    amrex::Gpu::streamSynchronize();
+#else
+    h_n_curr_out_data.resize({0}, {site_size_loc_all_NS}, The_Pinned_Arena());
+    h_Norm_data.resize({0}, {site_size_loc_all_NS}, The_Pinned_Arena());
+    
+    SetVal_RealTable1D(h_n_curr_out_data, 0.);
+    SetVal_RealTable1D(h_Norm_data, 0.);
+#endif
+}
+
 
 void c_TransportSolver::SetVal_RealTable1D(RealTable1D &Tab1D_data,
                                            amrex::Real val)

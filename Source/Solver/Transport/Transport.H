@@ -26,7 +26,7 @@ class c_TransportSolver
     int m_step = 0;
     int m_iter = 1;
     int total_iter = 0;
-    int use_selfconsistent_potential = 0;
+    int use_selfconsistent_potential = 1;
     int use_negf = 0;
     const int negf_plt_name_digits = 4;
     int flag_reset_with_previous_charge_distribution = 0;
@@ -136,10 +136,11 @@ class c_TransportSolver
     void Copy_DataToBeWrittenToHost(int NS_id);
     void Reset_ForNextBiasStep();
     void Obtain_maximum_time(amrex::Real const *total_time_counter_diff);
+    void Define_CumulativeInfo_ForAllNS();
+    void Define_Only_ChargeDensityOut();
 
 #ifdef BROYDEN_PARALLEL
     void Deallocate_Broyden_Parallel();
-    void Define_Broyden_Partition();
     void Define_MPI_Vector_Type_and_MPI_Vector_Sum();
     void Free_MPIDerivedDataTypes();
 

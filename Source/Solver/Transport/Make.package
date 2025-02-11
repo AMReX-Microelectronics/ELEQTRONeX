@@ -1,11 +1,7 @@
 CEXE_sources += Transport.cpp
 
-CEXE_sources += Broyden_Serial_General.cpp
-CEXE_sources += Broyden_Parallel_General.cpp
-
+CEXE_sources += Broyden_Second.cpp
 CEXE_sources += Simple_Mixing_Serial.cpp
-CEXE_sources += Broyden_Second_Serial.cpp
-CEXE_sources += Broyden_Second_Parallel.cpp
 
 CEXE_headers += Transport.H
 CEXE_headers += Transport_Table_ReadWrite.H
