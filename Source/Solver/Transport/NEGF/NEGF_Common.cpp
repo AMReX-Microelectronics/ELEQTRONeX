@@ -1110,7 +1110,7 @@ void c_NEGF_Common<T>::Define_PotentialProfile()
         {
             amrex::ParmParse pp_ns(name);
             amrex::Real V_const = 0;
-            getWithParser(pp_ns, "applied_voltage", V_const);
+            queryWithParser(pp_ns, "applied_voltage", V_const);
             amrex::Print()
                 << "#####* For Constant Potential Profile, applied voltage: "
                 << V_const << "\n";

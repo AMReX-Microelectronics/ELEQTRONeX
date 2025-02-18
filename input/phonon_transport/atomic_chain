@@ -33,6 +33,10 @@ my_constants.gx = 1
 my_constants.gy = 1
 my_constants.gz = 1
 
+NS_default.flag_compute_DOS = 1 #DOS, Transmission, Conductance
+NS_default.flag_write_LDOS = 1
+NS_default.flag_write_LDOS_iter = 1
+NS_default.write_LDOS_iter_period = 1
 ##################################################
 ###### TIME DEPENDENT SIMULATION PROPERTIES ######
 ##################################################
@@ -77,7 +81,7 @@ macroscopic.atom_locations = 0.
 ###### OUTPUT ######
 ####################
 
-plot.folder_name = all_around_metal
+plot.folder_name = atomic_chain
 plot.fields_to_plot = phi.1
 plot.write_after_init = 0
 plot.write_interval = 1
@@ -89,17 +93,18 @@ plot.rawfield_write_interval = 1000000
 
 transport.NS_names = atomic_chain
 transport.use_negf = 1
-
+transport.use_selfconsistent_potential = 0
 transport.NS_initial_deposit_value  = 0.
 # transport.reset_with_previous_charge_distribution = 1
+#
 
 atomic_chain.type = atomic_chain
-atomic_chain.f_d  = 50 # N/m
-atomic_chain.f_c  = 25 # N/m
-atomic_chain.f_cd = 37.5 # N/m
-atomic_chain.m_d  = 20 # amu
-atomic_chain.m_c  = 20 # amu
-atomic_chain.spacing = 5.5e-10 
+atomic_chain.spring_constant_device_device  = 50 # N/m
+atomic_chain.spring_constant_contact_contact  = 25 # N/m
+atomic_chain.spring_constant_contact_device = 37.5 # N/m
+atomic_chain.mass_device_atoms = 20 # amu
+atomic_chain.mass_contact_atoms  = 20 # amu
+atomic_chain.atom_spacing = 5.5e-10 
 atomic_chain.num_unitcells = N_unitcells
 atomic_chain.offset = AC_x AC_y AC_z
 

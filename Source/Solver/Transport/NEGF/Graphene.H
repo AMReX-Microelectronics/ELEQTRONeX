@@ -43,6 +43,8 @@ class c_Graphene : public c_NEGF_Common<ComplexType[BLOCK_SIZE][BLOCK_SIZE]>
     // }
 
    public:
+    static constexpr bool uses_particle_container = true;
+
     static int get_1D_site_id(int par_id_local_to_NS)
     {
         return static_cast<int>(

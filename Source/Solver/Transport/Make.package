@@ -7,7 +7,8 @@ CEXE_headers += Transport.H
 CEXE_headers += Transport_Table_ReadWrite.H
 CEXE_headers += Transport_fwd.H
 
-CEXE_sources += Nanostructure.cpp
+CEXE_sources += Nanostructure_WithParContainer.cpp
+CEXE_sources += Nanostructure_WithoutParContainer.cpp
 CEXE_headers += Nanostructure.H
 CEXE_headers += Nanostructure_fwd.H
 

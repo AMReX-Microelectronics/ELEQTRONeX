@@ -79,6 +79,8 @@ class c_CNT : public c_NEGF_Common<ComplexType[BLOCK_SIZE]>
                                                const ComplexType EmU) final;
 
    public:
+    static constexpr bool uses_particle_container = true;
+
     static int get_1D_site_id(int par_id_local_to_NS)
     {
         return static_cast<int>(

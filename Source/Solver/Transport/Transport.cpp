@@ -53,7 +53,7 @@ c_TransportSolver::c_TransportSolver() { ReadData(); }
 void c_TransportSolver::Cleanup()
 {
 #ifdef BROYDEN_PARALLEL
-    Free_MPIDerivedDataTypes();
+    if (use_selfconsistent_potential) Free_MPIDerivedDataTypes();
 #endif
 }
 
@@ -281,10 +281,20 @@ template <typename NSType>
 void c_TransportSolver::Create_Nanostructure(const std::string &name,
                                              const int NS_id_counter)
 {
-    vp_NS.push_back(std::make_unique<c_Nanostructure<NSType>>(
-        *_geom, *_dm, *_ba, name, NS_id_counter, NS_gather_field_str,
-        NS_deposit_field_str, NS_initial_deposit_value, use_negf,
-        negf_foldername_str));
+    if constexpr (RequiresParticleContainer<NSType>::value)
+    {
+        vp_NS.push_back(std::make_unique<c_Nanostructure<NSType>>(
+            *_geom, *_dm, *_ba, name, NS_id_counter, NS_gather_field_str,
+            NS_deposit_field_str, NS_initial_deposit_value, use_negf,
+            negf_foldername_str));
+    }
+    else
+    {
+        // call the constructor for false specialization
+        vp_NS.push_back(std::make_unique<c_Nanostructure<NSType>>(
+            name, NS_id_counter, NS_initial_deposit_value,
+            use_negf, negf_foldername_str));
+    }    
 }
 
 int c_TransportSolver::Instantiate_Materials()
@@ -313,11 +323,12 @@ int c_TransportSolver::Instantiate_Materials()
             case s_NS_Type::Silicon:
             {
                 amrex::Abort("NS_type silicon is not yet defined.");
+                break;
             }
             case s_NS_Type::AtomicChain:
             {
                 Create_Nanostructure<c_AtomicChain>(name, NS_id_counter);
-                amrex::Abort("NS_type graphene is not yet defined.");
+                break;
             }
             default:
             {

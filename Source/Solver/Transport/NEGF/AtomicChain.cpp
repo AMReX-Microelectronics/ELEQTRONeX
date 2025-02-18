@@ -26,7 +26,7 @@ void c_AtomicChain::Read_MaterialSpecificNanostructureProperties()
     amrex::ParmParse pp_ns(name);
     amrex::ParmParse *pp = &pp_ns_default;
 
-    amrex::Print() << "##### Reading ParmParse AtomicChain_Default\n";
+    amrex::Print() << "##### Reading ParmParse atomic_chain_default\n";
     for (int i = 0; i < 2; ++i)
     {
         if (i == 1)
