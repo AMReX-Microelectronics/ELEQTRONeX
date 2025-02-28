@@ -1279,7 +1279,7 @@ void c_NEGF_Common<T>::Initialize_NEGF(const std::string common_foldername_str,
 
     Construct_Hamiltonian();
 
-    if(use_decimation) Construct_ContactHamiltonian();
+    if (use_decimation) Construct_ContactHamiltonian();
 
     Define_ContactInfo();
 
@@ -1432,7 +1432,6 @@ void c_NEGF_Common<T>::Allocate_ArraysForHamiltonian()
 
     h_Hc_loc_data.resize({0}, {offDiag_repeatBlkSize}, The_Pinned_Arena());
     SetVal_Table1D(h_Hc_loc_data, zero);
-
 }
 
 template <typename T>
@@ -1446,14 +1445,15 @@ void c_NEGF_Common<T>::Allocate_ArraysForContactHamiltonian()
      *           |                                 Beta0^D Alpha0 |
      * Alpha, Beta size: decimation layers
      */
-    
+
     ComplexType zero(0., 0.);
-    h_HcontactAlpha_loc_data.resize({0}, {decimation_layers-1}, The_Pinned_Arena());
+    h_HcontactAlpha_loc_data.resize({0}, {decimation_layers - 1},
+                                    The_Pinned_Arena());
     SetVal_Table1D(h_HcontactAlpha_loc_data, zero);
 
-    h_HcontactBeta_loc_data.resize({0}, {decimation_layers-1}, The_Pinned_Arena());
+    h_HcontactBeta_loc_data.resize({0}, {decimation_layers - 1},
+                                   The_Pinned_Arena());
     SetVal_Table1D(h_HcontactBeta_loc_data, zero);
-
 }
 
 template <typename T>
@@ -1474,15 +1474,17 @@ void c_NEGF_Common<T>::Compute_CondensedHamiltonian(CondensedHamiltonian &CondH,
 
     MatrixBlock<T> EmUI;
     EmUI.SetDiag(EmU);  // This is (E-U)I
-    auto temp = EmUI - HcontactAlpha(P-1);
-    H_tilde(P-1) = temp.Inverse(); // This is (P-1) element of [(E-U)I - contact_alpha]^-1
+    auto temp = EmUI - HcontactAlpha(P - 1);
+    H_tilde(P - 1) =
+        temp.Inverse();  // This is (P-1) element of [(E-U)I - contact_alpha]^-1
 
     auto H_tilde_kP = H_tilde(P - 1);  // This is H_tilde(P-1)(P-1)
 
     for (int k = P - 2; k >= 1; --k)
     {
-        auto temp1 = EmUI - HcontactAlpha(k) 
-                          - HcontactBeta(k) * H_tilde(k + 1) * HcontactBeta(k).Dagger();
+        auto temp1 =
+            EmUI - HcontactAlpha(k) -
+            HcontactBeta(k) * H_tilde(k + 1) * HcontactBeta(k).Dagger();
 
         H_tilde(k) = temp1.Inverse();
 
@@ -1494,17 +1496,19 @@ void c_NEGF_Common<T>::Compute_CondensedHamiltonian(CondensedHamiltonian &CondH,
 
     for (int k = 2; k < P; ++k)
     {
-        C_tilde_kk = H_tilde(k) + H_tilde(k) * HcontactBeta(k-1).Dagger() * C_tilde_kk *
-                                      HcontactBeta(k-1) * H_tilde(k);
+        C_tilde_kk = H_tilde(k) + H_tilde(k) * HcontactBeta(k - 1).Dagger() *
+                                      C_tilde_kk * HcontactBeta(k - 1) *
+                                      H_tilde(k);
     }
     /* Here, C_tilde_kk = C_tilde_(P-1)(P-1)
      * and,  C_tilde_1P = H_tilde_1P = H_tilde_kP
      *       C_tilde_11 = H_tilde(1)
      */
 
-    Xi_s = HcontactAlpha(0) + HcontactBeta(0) * H_tilde(1) * HcontactBeta(0).Dagger();
-    Xi = Xi_s + HcontactBeta(P-1) * C_tilde_kk * HcontactBeta(P-1).Dagger();
-    Pi = HcontactBeta(0) * H_tilde_kP * HcontactBeta(P-1);
+    Xi_s = HcontactAlpha(0) +
+           HcontactBeta(0) * H_tilde(1) * HcontactBeta(0).Dagger();
+    Xi = Xi_s + HcontactBeta(P - 1) * C_tilde_kk * HcontactBeta(P - 1).Dagger();
+    Pi = HcontactBeta(0) * H_tilde_kP * HcontactBeta(P - 1);
 
     /* For P=2, as an example,
      *
@@ -1669,7 +1673,7 @@ template <typename T>
 void c_NEGF_Common<T>::Allocate_Arrays()
 {
     Allocate_ArraysForHamiltonian();
-    if(use_decimation) Allocate_ArraysForContactHamiltonian();
+    if (use_decimation) Allocate_ArraysForContactHamiltonian();
     Allocate_ArraysForLeadSpecificQuantities();
     Allocate_ArraysForGreensAndSpectralFunction();
     Allocate_ArraysForChargeAndCurrent();
@@ -4195,7 +4199,7 @@ void c_NEGF_Common<T>::get_Sigma_at_contacts(BlkTable1D &h_Sigma_contact_data,
     for (std::size_t c = 0; c < NUM_CONTACTS; ++c)
     {
         MatrixBlock<T> gr;
-        Compute_SurfaceGreensFunction(gr, E-U_contact[c]);
+        Compute_SurfaceGreensFunction(gr, E - U_contact[c]);
         h_Sigma(c) = h_tau(c) * gr * h_tau(c).Dagger();
     }
 }

@@ -6,7 +6,7 @@ amrex.the_arena_is_managed=1
 ##### USER DEFINED CONSTANTS #####
 ##################################
 ### Atomic Chain
-my_constants.N_unitcells = 1
+my_constants.N_unitcells = 3
 my_constants.atom_spacing = 5.5e-10
 my_constants.total_length = (N_unitcells+2)*atom_spacing
 
@@ -14,7 +14,7 @@ my_constants.AC_x = 0.
 my_constants.AC_y = 0.
 my_constants.AC_z = 0.
 
-my_constants.Ef = -1.       #Contact Fermi level [eV]
+my_constants.Ef = 0.      #Contact Fermi level [eV]
 
 ### Total domain dimensions
 my_constants.Lx = atom_spacing
@@ -99,11 +99,11 @@ transport.NS_initial_deposit_value  = 0.
 #
 
 atomic_chain.type = atomic_chain
-atomic_chain.spring_constant_device_device  = 50 # N/m
-atomic_chain.spring_constant_contact_contact  = 25 # N/m
-atomic_chain.spring_constant_contact_device = 37.5 # N/m
-atomic_chain.mass_device_atoms = 20 # amu
-atomic_chain.mass_contact_atoms  = 20 # amu
+atomic_chain.spring_constant_device_device  = 32 #50 # N/m
+atomic_chain.spring_constant_contact_contact  = 32 #25 # N/m
+atomic_chain.spring_constant_contact_device = 32 #37.5 # N/m
+atomic_chain.mass_device_atoms = 27.7 # amu = 4.6e-26 kg
+atomic_chain.mass_contact_atoms  = 27.7 #20 amu
 atomic_chain.atom_spacing = 5.5e-10 
 atomic_chain.num_unitcells = N_unitcells
 atomic_chain.offset = AC_x AC_y AC_z
@@ -116,7 +116,7 @@ atomic_chain.contact_mu = Ef Ef
 atomic_chain.contact_T  = 298. 298.
 
 atomic_chain.contact_Fermi_level = Ef
-atomic_chain.E_valence_min = -10
+atomic_chain.E_valence_min = 0
 atomic_chain.E_pole_max    = 3
 atomic_chain.eq_integration_pts = 30 30 30
 atomic_chain.noneq_integration_pts = 100

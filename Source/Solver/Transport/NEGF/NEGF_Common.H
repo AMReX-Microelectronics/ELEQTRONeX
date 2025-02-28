@@ -249,7 +249,8 @@ class c_NEGF_Common : protected MatrixBlock<T>, private c_IntegrationPath
     void Find_NonEq_Percent_Intercuts_Adaptively();
 
     AMREX_GPU_HOST_DEVICE
-    ComplexType FermiFunction(ComplexType E_minus_Mu, const amrex::Real kT);
+    virtual ComplexType FermiFunction(ComplexType E_minus_Mu,
+                                      const amrex::Real kT);
 
     amrex::Real Compute_Conductance(const amrex::Vector<ComplexType> E_vec,
                                     const RealTable1D &Transmission_data,

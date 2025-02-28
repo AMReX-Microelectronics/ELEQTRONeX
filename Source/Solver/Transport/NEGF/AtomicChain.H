@@ -13,7 +13,7 @@
 class c_AtomicChain : public c_NEGF_Common<ComplexType[BLOCK_SIZE]>
 {
     using BlkType = ComplexType[BLOCK_SIZE];
-    
+
     amrex::Real f_d;
     amrex::Real f_c;
     amrex::Real f_cd;
@@ -21,8 +21,8 @@ class c_AtomicChain : public c_NEGF_Common<ComplexType[BLOCK_SIZE]>
     amrex::Real m_c;
     amrex::Real spacing;
 
-    void Read_AtomicChainParameters(amrex::ParmParse &pp_ns); 
-    //void Set_AtomicChainParameters();
+    void Read_AtomicChainParameters(amrex::ParmParse &pp_ns);
+    // void Set_AtomicChainParameters();
     void Print_AtomicChainParameters();
 
     s_Position3D get_AtomPosition(int field_id);
@@ -32,29 +32,24 @@ class c_AtomicChain : public c_NEGF_Common<ComplexType[BLOCK_SIZE]>
     virtual void Set_MaterialSpecificParameters() final;
     virtual void Print_MaterialSpecificReadData() final;
 
-    virtual void Construct_Hamiltonian() final; 
-    virtual void Construct_ContactHamiltonian() final; 
-    virtual void Define_ContactInfo() final; 
-    virtual void Define_MPI_BlkType() final; 
+    virtual void Construct_Hamiltonian() final;
+    virtual void Construct_ContactHamiltonian() final;
+    virtual void Define_ContactInfo() final;
+    virtual void Define_MPI_BlkType() final;
 
-    virtual int Compute_NumAtoms() final
-    {
-        return num_unitcells;
-    }
+    AMREX_GPU_HOST_DEVICE
+    virtual ComplexType FermiFunction(ComplexType E_minus_Mu,
+                                      const amrex::Real kT) final;
 
-    virtual int Compute_AtomsPerUnitcell() final
-    {
-        return 1;
-    }
+    virtual int Compute_NumAtoms() final { return num_unitcells; }
 
-    virtual int Compute_NumFieldSites() final
-    {
-        return num_unitcells;
-    }
+    virtual int Compute_AtomsPerUnitcell() final { return 1; }
+
+    virtual int Compute_NumFieldSites() final { return num_unitcells; }
 
     virtual int Compute_NumAtomsPerFieldSite() final { return 1; }
     virtual int Set_PrimaryTransportDir() final { return 1; /*Y*/ }
-    virtual int Set_AverageFieldFlag() final { return 0; } 
+    virtual int Set_AverageFieldFlag() final { return 0; }
     virtual int Compute_NumAtomsToAvgOver() final { return 1; }
 
     virtual void Set_BlockDegeneracyVector(amrex::Vector<int> &vec) final;
@@ -81,10 +76,7 @@ class c_AtomicChain : public c_NEGF_Common<ComplexType[BLOCK_SIZE]>
         }
     };
 
-    static GetAtomIDAtSite get_atom_id_at_site()
-    {
-        return GetAtomIDAtSite{};
-    }
+    static GetAtomIDAtSite get_atom_id_at_site() { return GetAtomIDAtSite{}; }
 
     virtual void Generate_AtomLocations(amrex::Vector<s_Position3D> &pos) final;
 };

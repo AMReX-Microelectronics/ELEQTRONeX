@@ -39,8 +39,7 @@ const std::map<std::string, s_NS_Type> c_TransportSolver::map_NSType_enum = {
     {"silicon", s_NS_Type::Silicon},
     {"Silicon", s_NS_Type::Silicon},
     {"atomic_chain", s_NS_Type::AtomicChain},
-    {"Atomic_Chain", s_NS_Type::AtomicChain}
-};
+    {"Atomic_Chain", s_NS_Type::AtomicChain}};
 
 const std::map<std::string, s_Algorithm_Type>
     c_TransportSolver::map_AlgorithmType = {
@@ -176,8 +175,10 @@ void c_TransportSolver::InitData()
 
     if (rCode.use_electrostatic) Group_ChargeDepositedByAllNS();
 
-    if (use_selfconsistent_potential) Set_Broyden_Parallel();
-    else Define_Only_ChargeDensityOut();
+    if (use_selfconsistent_potential)
+        Set_Broyden_Parallel();
+    else
+        Define_Only_ChargeDensityOut();
 }
 
 void c_TransportSolver::Read_ControlFlags(amrex::ParmParse &pp)
@@ -292,9 +293,9 @@ void c_TransportSolver::Create_Nanostructure(const std::string &name,
     {
         // call the constructor for false specialization
         vp_NS.push_back(std::make_unique<c_Nanostructure<NSType>>(
-            name, NS_id_counter, NS_initial_deposit_value,
-            use_negf, negf_foldername_str));
-    }    
+            name, NS_id_counter, NS_initial_deposit_value, use_negf,
+            negf_foldername_str));
+    }
 }
 
 int c_TransportSolver::Instantiate_Materials()
@@ -550,18 +551,20 @@ void c_TransportSolver::Solve(const int step, const amrex::Real time)
     }
     else  // if not using electrostatics
     {
-        m_iter=1;
-        bool flag_update_terminal_bias=false;
+        m_iter = 1;
+        bool flag_update_terminal_bias = false;
 
         // Part 1: Solve NEGF
         for (int c = 0; c < vp_NS.size(); ++c)
         {
 #ifdef AMREX_USE_GPU
-            total_intg_pts_in_all_iter += vp_NS[c]->Solve_NEGF(d_n_curr_out_data, 
-                    m_iter, flag_update_terminal_bias);
+            total_intg_pts_in_all_iter +=
+                vp_NS[c]->Solve_NEGF(d_n_curr_out_data, m_iter,
+                                     flag_update_terminal_bias);
 #else
-            total_intg_pts_in_all_iter += vp_NS[c]->Solve_NEGF(h_n_curr_out_data, 
-                    m_iter, flag_update_terminal_bias);
+            total_intg_pts_in_all_iter +=
+                vp_NS[c]->Solve_NEGF(h_n_curr_out_data, m_iter,
+                                     flag_update_terminal_bias);
 #endif
         }
 
@@ -768,7 +771,6 @@ void c_TransportSolver::Reset_ForNextBiasStep()
     MPI_Barrier(ParallelDescriptor::Communicator());
 }
 
-
 void c_TransportSolver::Define_CumulativeInfo_ForAllNS()
 {
     /* Each process executes this function.
@@ -795,7 +797,6 @@ void c_TransportSolver::Define_CumulativeInfo_ForAllNS()
     site_size_loc_all_NS = site_size_loc_cumulative[vp_NS.size()];
 }
 
-
 void c_TransportSolver::Define_Only_ChargeDensityOut()
 {
     Define_CumulativeInfo_ForAllNS();
@@ -817,12 +818,11 @@ void c_TransportSolver::Define_Only_ChargeDensityOut()
 #else
     h_n_curr_out_data.resize({0}, {site_size_loc_all_NS}, The_Pinned_Arena());
     h_Norm_data.resize({0}, {site_size_loc_all_NS}, The_Pinned_Arena());
-    
+
     SetVal_RealTable1D(h_n_curr_out_data, 0.);
     SetVal_RealTable1D(h_Norm_data, 0.);
 #endif
 }
-
 
 void c_TransportSolver::SetVal_RealTable1D(RealTable1D &Tab1D_data,
                                            amrex::Real val)

@@ -323,8 +323,8 @@ void c_CNT::Construct_Hamiltonian()
     {
         if (i % offDiag_repeatBlkSize == 0)
         {
-            h_Hb(i) = -1.*beta; /* negative sign because we are storing -H0 */
-            h_Hc(i) = -1.*beta;
+            h_Hb(i) = -1. * beta; /* negative sign because we are storing -H0 */
+            h_Hc(i) = -1. * beta;
         }
         else
         {
@@ -333,7 +333,6 @@ void c_CNT::Construct_Hamiltonian()
         }
     }
 }
-
 
 void c_CNT::Construct_ContactHamiltonian()
 {
@@ -351,13 +350,13 @@ void c_CNT::Construct_ContactHamiltonian()
      * In the above example there are 5 decimation layers.
      */
     auto const &h_HcontactAlpha = h_HcontactAlpha_loc_data.table();
-    auto const &h_HcontactBeta  = h_HcontactBeta_loc_data.table();
+    auto const &h_HcontactBeta = h_HcontactBeta_loc_data.table();
     auto const &h_Hb = h_Hb_loc_data.const_table();
 
     for (std::size_t i = 0; i < decimation_layers; ++i)
     {
         std::size_t j = i % offDiag_repeatBlkSize;
-        h_HcontactBeta(i) = -1.*h_Hb(j);
+        h_HcontactBeta(i) = -1. * h_Hb(j);
     }
 
     for (std::size_t i = 0; i < decimation_layers; ++i)
@@ -365,7 +364,6 @@ void c_CNT::Construct_ContactHamiltonian()
         h_HcontactAlpha(i) = 0;
     }
 }
-
 
 void c_CNT::Define_ContactInfo()
 {

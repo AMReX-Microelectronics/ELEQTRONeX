@@ -16,8 +16,10 @@
 #include <iostream>
 
 template class c_Nanostructure<c_CNT, RequiresParticleContainer<c_CNT>::value>;
-template class c_Nanostructure<c_Graphene, RequiresParticleContainer<c_Graphene>::value>;
-template class c_Nanostructure<c_AtomicChain, RequiresParticleContainer<c_AtomicChain>::value>;
+template class c_Nanostructure<c_Graphene,
+                               RequiresParticleContainer<c_Graphene>::value>;
+template class c_Nanostructure<c_AtomicChain,
+                               RequiresParticleContainer<c_AtomicChain>::value>;
 
 template <typename NSType>
 c_Nanostructure<NSType, true>::c_Nanostructure(

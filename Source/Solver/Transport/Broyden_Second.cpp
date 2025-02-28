@@ -39,7 +39,6 @@ void c_TransportSolver::Free_MPIDerivedDataTypes()
     MPI_Op_free(&Vector_Add);
 }
 
-
 void c_TransportSolver::Set_Broyden_Parallel()
 {
     amrex::Print() << "\nSetting Broyden PARALLEL\n";

@@ -1,5 +1,3 @@
-#include "Nanostructure.H"
-
 #include <AMReX.H>
 #include <AMReX_GpuContainers.H>
 
@@ -12,11 +10,13 @@
 #include "../../Utils/SelectWarpXUtils/TextMsg.H"
 #include "../../Utils/SelectWarpXUtils/WarpXConst.H"
 #include "../../Utils/SelectWarpXUtils/WarpXUtil.H"
+#include "Nanostructure.H"
 //
 #include <iostream>
 
 template class c_Nanostructure<c_CNT, RequiresParticleContainer<c_CNT>::value>;
-template class c_Nanostructure<c_Graphene, RequiresParticleContainer<c_Graphene>::value>;
+template class c_Nanostructure<c_Graphene,
+                               RequiresParticleContainer<c_Graphene>::value>;
 
 template <typename NSType>
 c_Nanostructure<NSType, true>::c_Nanostructure(

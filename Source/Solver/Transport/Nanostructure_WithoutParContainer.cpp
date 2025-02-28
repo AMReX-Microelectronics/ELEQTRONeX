@@ -1,6 +1,6 @@
-#include "Nanostructure.H"
-
 #include <AMReX.H>
+
+#include "Nanostructure.H"
 //#include <AMReX_GpuContainers.H>
 
 #include "../../Code.H"
@@ -12,14 +12,13 @@
 
 #include <iostream>
 
-template class c_Nanostructure<c_AtomicChain, RequiresParticleContainer<c_AtomicChain>::value>;
+template class c_Nanostructure<c_AtomicChain,
+                               RequiresParticleContainer<c_AtomicChain>::value>;
 
 template <typename NSType>
 c_Nanostructure<NSType, false>::c_Nanostructure(
-    const std::string NS_name_str,
-    const int NS_id_counter, 
-    const amrex::Real NS_initial_deposit_value, 
-    const int use_negf,
+    const std::string NS_name_str, const int NS_id_counter,
+    const amrex::Real NS_initial_deposit_value, const int use_negf,
     const std::string negf_foldername_str)
 {
     _use_negf = use_negf;
@@ -40,7 +39,6 @@ c_Nanostructure<NSType, false>::c_Nanostructure(
         pos_vec.clear();
     }
 }
-
 
 template <typename NSType>
 void c_Nanostructure<NSType, false>::Read_AtomLocations()
@@ -96,4 +94,3 @@ void c_Nanostructure<NSType, false>::Read_AtomLocations()
         }
     }
 }
-
