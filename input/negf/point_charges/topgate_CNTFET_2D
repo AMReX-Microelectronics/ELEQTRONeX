@@ -161,7 +161,7 @@ my_constants.FET_width   = CM_width
 ##############################
 #my_constants.ZOffset = S_top + R_CN*2 + small_gap + 4*dz # 4dz above CNTedgetop
 #my_constants.ZOffset = GO_bottom + GO_thickness/2. # 4dz above CNTedgetop
-my_constants.ZOffset = GO_bottom + 4*dz # 4dz above CNTedgetop
+my_constants.ZOffset = GO_bottom + 4*dz #above CNTedgetop
 
 charge_density_source.type = point_charge
 pc.flag_vary_occupation = 1
@@ -174,7 +174,7 @@ pc.default_charge_unit = 1
 pc.default_occupation = 1
 
 pc.flag_random_positions = 1
-pc.charge_density=0.7e18 #cubic meter
+pc.charge_density=1.5e18 #cubic meter
 pc.random_seed = 0
 
 #pc.num = 1

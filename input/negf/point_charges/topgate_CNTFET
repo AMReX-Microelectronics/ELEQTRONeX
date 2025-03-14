@@ -23,8 +23,8 @@ my_constants.periodicity_length = periodicity_factor * unitcells_per_D_CN * L_un
 
 
 my_constants.Vds = 0.   #Drain-Source voltage [V]
-my_constants.Vgs_min = -2
-my_constants.Vgs_max = 0.4
+my_constants.Vgs_min = -1.6
+my_constants.Vgs_max = 0.5
 my_constants.Nsteps = 13
 my_constants.dt = 1./(Nsteps-1)
 
@@ -162,16 +162,16 @@ my_constants.FET_width   = CM_width
 
 charge_density_source.type = point_charge
 pc.flag_vary_occupation = 1
-pc.mixing_factor = 0.1
+pc.mixing_factor = 0.02
 pc.offset =  (-GO_width/2. + 10*dx) (-G_length/2.) (GO_bottom + 4*dz)
 pc.scaling = (GO_width - 20*dx) (G_length) (GO_thickness - 8*dz)
-pc.Et = 2
+pc.Et = 0.02
 pc.V0 = 0.5
 pc.default_charge_unit = 1
 pc.default_occupation = 1
 
 pc.flag_random_positions = 1
-pc.charge_density=0.04e27 #cubic meter
+pc.charge_density = 0.7e27 #cubic meter
 pc.random_seed = 0
 
 #pc.num = 1

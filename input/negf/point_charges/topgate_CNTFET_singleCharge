@@ -57,7 +57,7 @@ my_constants.epsilon_GO     = 25*epsilon_0 #HfO2
 my_constants.epsilon_S      = 3.9*epsilon_0 #SiO2
 
 my_constants.SV = 0.      #source voltage [V]
-my_constants.Ef = -1    #Palladium Contact Fermi level [eV] 
+my_constants.Ef = -0.2    #Palladium Contact Fermi level [eV] 
 
 my_constants.MGO_gap = 10*dx + dx/5. #gap between metal and gate oxide
 my_constants.MB_gap  = 5*dx #2*dx/5.
@@ -164,11 +164,43 @@ pc.flag_vary_occupation = 0
 pc.default_charge_unit = 1
 pc.default_occupation = 1
 
-my_constants.Zoffset=0.1e-9
+my_constants.Zoffset=4*dz
+my_constants.Xoffset=0
+my_constants.Yoffset=0
 my_constants.Zplane=GO_bottom + Zoffset
 
 pc.num = 1
 pc_1.location = CN_x CN_y (GO_bottom + Zoffset)
+pc_2.location  = (CN_x - Xoffset)    (CN_y - Yoffset)    (GO_bottom + Zoffset)
+pc_3.location  = (CN_x + Xoffset)    (CN_y + Yoffset)    (GO_bottom + Zoffset)
+pc_4.location  = (CN_x - 2*Xoffset)  (CN_y - 2*Yoffset)  (GO_bottom + Zoffset)
+pc_5.location  = (CN_x + 2*Xoffset)  (CN_y + 2*Yoffset)  (GO_bottom + Zoffset)
+pc_6.location  = (CN_x - 3*Xoffset)  (CN_y - 3*Yoffset)  (GO_bottom + Zoffset)
+pc_7.location  = (CN_x + 3*Xoffset)  (CN_y + 3*Yoffset)  (GO_bottom + Zoffset)
+pc_8.location  = (CN_x - 4*Xoffset)  (CN_y - 4*Yoffset)  (GO_bottom + Zoffset)
+pc_9.location  = (CN_x + 4*Xoffset)  (CN_y + 4*Yoffset)  (GO_bottom + Zoffset)
+pc_10.location = (CN_x - 5*Xoffset)  (CN_y - 5*Yoffset)  (GO_bottom + Zoffset)
+pc_11.location = (CN_x + 5*Xoffset)  (CN_y + 5*Yoffset)  (GO_bottom + Zoffset)
+pc_12.location = (CN_x - 6*Xoffset)  (CN_y - 6*Yoffset)  (GO_bottom + Zoffset)
+pc_13.location = (CN_x + 6*Xoffset)  (CN_y + 6*Yoffset)  (GO_bottom + Zoffset)
+pc_14.location = (CN_x - 7*Xoffset)  (CN_y - 7*Yoffset)  (GO_bottom + Zoffset)
+pc_15.location = (CN_x + 7*Xoffset)  (CN_y + 7*Yoffset)  (GO_bottom + Zoffset)
+pc_16.location = (CN_x - 8*Xoffset)  (CN_y - 8*Yoffset)  (GO_bottom + Zoffset)
+pc_17.location = (CN_x + 8*Xoffset)  (CN_y + 8*Yoffset)  (GO_bottom + Zoffset)
+pc_18.location = (CN_x - 9*Xoffset)  (CN_y - 9*Yoffset)  (GO_bottom + Zoffset)
+pc_19.location = (CN_x + 9*Xoffset)  (CN_y + 9*Yoffset)  (GO_bottom + Zoffset)
+pc_20.location = (CN_x - 10*Xoffset) (CN_y - 10*Yoffset) (GO_bottom + Zoffset)
+pc_21.location = (CN_x + 10*Xoffset) (CN_y + 10*Yoffset) (GO_bottom + Zoffset)
+pc_22.location = (CN_x - 11*Xoffset) (CN_y - 11*Yoffset) (GO_bottom + Zoffset)
+pc_23.location = (CN_x + 11*Xoffset) (CN_y + 11*Yoffset) (GO_bottom + Zoffset)
+pc_24.location = (CN_x - 12*Xoffset) (CN_y - 12*Yoffset) (GO_bottom + Zoffset)
+pc_25.location = (CN_x + 12*Xoffset) (CN_y + 12*Yoffset) (GO_bottom + Zoffset)
+pc_26.location = (CN_x - 13*Xoffset) (CN_y - 13*Yoffset) (GO_bottom + Zoffset)
+pc_27.location = (CN_x + 13*Xoffset) (CN_y + 13*Yoffset) (GO_bottom + Zoffset)
+pc_28.location = (CN_x - 14*Xoffset) (CN_y - 14*Yoffset) (GO_bottom + Zoffset)
+pc_29.location = (CN_x + 14*Xoffset) (CN_y + 14*Yoffset) (GO_bottom + Zoffset)
+pc_30.location = (CN_x - 15*Xoffset) (CN_y - 15*Yoffset) (GO_bottom + Zoffset)
+pc_31.location = (CN_x + 15*Xoffset) (CN_y + 15*Yoffset) (GO_bottom + Zoffset)
 
 ##################################################
 ###### TIME DEPENDENT SIMULATION PROPERTIES ######

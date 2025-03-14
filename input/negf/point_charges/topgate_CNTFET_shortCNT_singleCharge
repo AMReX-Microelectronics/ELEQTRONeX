@@ -164,11 +164,33 @@ pc.flag_vary_occupation = 0
 pc.default_charge_unit = 1
 pc.default_occupation = 1
 
-my_constants.Zoffset=0.1e-9
+my_constants.Zoffset=4*dz
+my_constants.Xoffset=0
+my_constants.Yoffset=0
 my_constants.Zplane = GO_bottom + Zoffset
 
 pc.num = 1
 pc_1.location = CN_x CN_y (GO_bottom + Zoffset)
+pc_2.location  = (CN_x - Xoffset)    (CN_y - Yoffset)    (GO_bottom + Zoffset)
+pc_3.location  = (CN_x + Xoffset)    (CN_y + Yoffset)    (GO_bottom + Zoffset)
+pc_4.location  = (CN_x - 2*Xoffset)  (CN_y - 2*Yoffset)  (GO_bottom + Zoffset)
+pc_5.location  = (CN_x + 2*Xoffset)  (CN_y + 2*Yoffset)  (GO_bottom + Zoffset)
+pc_6.location  = (CN_x - 3*Xoffset)  (CN_y - 3*Yoffset)  (GO_bottom + Zoffset)
+pc_7.location  = (CN_x + 3*Xoffset)  (CN_y + 3*Yoffset)  (GO_bottom + Zoffset)
+pc_8.location  = (CN_x - 4*Xoffset)  (CN_y - 4*Yoffset)  (GO_bottom + Zoffset)
+pc_9.location  = (CN_x + 4*Xoffset)  (CN_y + 4*Yoffset)  (GO_bottom + Zoffset)
+pc_10.location = (CN_x - 5*Xoffset)  (CN_y - 5*Yoffset)  (GO_bottom + Zoffset)
+pc_11.location = (CN_x + 5*Xoffset)  (CN_y + 5*Yoffset)  (GO_bottom + Zoffset)
+pc_12.location = (CN_x - 6*Xoffset)  (CN_y - 6*Yoffset)  (GO_bottom + Zoffset)
+pc_13.location = (CN_x + 6*Xoffset)  (CN_y + 6*Yoffset)  (GO_bottom + Zoffset)
+pc_14.location = (CN_x - 7*Xoffset)  (CN_y - 7*Yoffset)  (GO_bottom + Zoffset)
+pc_15.location = (CN_x + 7*Xoffset)  (CN_y + 7*Yoffset)  (GO_bottom + Zoffset)
+pc_16.location = (CN_x - 8*Xoffset)  (CN_y - 8*Yoffset)  (GO_bottom + Zoffset)
+pc_17.location = (CN_x + 8*Xoffset)  (CN_y + 8*Yoffset)  (GO_bottom + Zoffset)
+pc_18.location = (CN_x - 9*Xoffset)  (CN_y - 9*Yoffset)  (GO_bottom + Zoffset)
+pc_19.location = (CN_x + 9*Xoffset)  (CN_y + 9*Yoffset)  (GO_bottom + Zoffset)
+pc_20.location = (CN_x - 10*Xoffset) (CN_y - 10*Yoffset) (GO_bottom + Zoffset)
+pc_21.location = (CN_x + 10*Xoffset) (CN_y + 10*Yoffset) (GO_bottom + Zoffset)
 
 ##################################################
 ###### TIME DEPENDENT SIMULATION PROPERTIES ######
@@ -221,15 +243,15 @@ domain.blocking_factor = nx/gx ny/gy nz/gz
 domain.prob_lo = -Lx/2. -Ly/2.  Lz_min
 domain.prob_hi =  Lx/2.  Ly/2.  Lz_max
 
-domain.is_periodic = 1 0 0
+domain.is_periodic = 0 0 0
 
 domain.coord_sys = cartesian
 
 #################################
 ###### BOUNDARY CONDITIONS ######
 #################################
-boundary.hi = per(0.) neu(0.) neu(0.)
-boundary.lo = per(0.) neu(0.) neu(0.)
+boundary.hi = neu(0.) neu(0.) neu(0.)
+boundary.lo = neu(0.) neu(0.) neu(0.)
 
 ####################################
 ###### MACROSCOPIC PROPERTIES ######
