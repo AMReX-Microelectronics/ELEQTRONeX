@@ -190,7 +190,7 @@ class c_TransportSolver
    public:
     c_TransportSolver();
     void InitData();
-    const std::vector<std::pair<int, int>> &Get_Vec_Biases() const
+    const std::vector<std::pair<amrex::Real, amrex::Real>> &Get_Vec_Biases() const
     {
         return vec_biases;
     }
