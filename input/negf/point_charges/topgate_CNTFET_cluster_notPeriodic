@@ -23,8 +23,8 @@ my_constants.periodicity_length = periodicity_factor * unitcells_per_D_CN * L_un
 
 
 my_constants.Vds = 0.   #Drain-Source voltage [V]
-my_constants.Vgs_min = -1.6
-my_constants.Vgs_max = 0.5
+my_constants.Vgs_min = -1
+my_constants.Vgs_max = 0.6
 my_constants.Nsteps = 13
 my_constants.dt = 1./(Nsteps-1)
 
@@ -41,7 +41,7 @@ NS_default.write_LDOS_iter_period = 10
 restart = 0
 restart_step = 0
 NS_default.initialize_charge_distribution = 0
-NS_default.write_at_iter = 1
+NS_default.write_at_iter = 0
 ##################################
 ##### USER DEFINED CONSTANTS #####
 ##################################
@@ -59,8 +59,8 @@ my_constants.epsilon_S      = 3.9*epsilon_0 #SiO2
 my_constants.SV = 0.      #source voltage [V]
 my_constants.Ef = -0.2    #Palladium Contact Fermi level [eV] 
 
-my_constants.MGO_gap = 5*dx + dx/5. #gap between metal and gate oxide
-my_constants.MB_gap  = dx #2*dx/5.
+my_constants.MGO_gap = 10*dx + dx/5. #gap between metal and gate oxide
+my_constants.MB_gap  = 5*dx #2*dx/5.
 
 ### Total domain dimensions ###
 ###############################
@@ -159,23 +159,48 @@ my_constants.FET_width   = CM_width
 ##############################
 ###### Point Charges #########
 ##############################
-
 charge_density_source.type = point_charge
-pc.flag_vary_occupation = 1
-pc.mixing_factor = 0.02
-pc.offset =  (-GO_width/2. + 10*dx) (-G_length/2.) (GO_bottom + 4*dz)
-pc.scaling = (GO_width - 20*dx) (G_length) (GO_thickness - 8*dz)
-pc.Et = 0.02
-pc.V0 = 0.5
+pc.flag_vary_occupation = 0
 pc.default_charge_unit = 1
 pc.default_occupation = 1
 
-pc.flag_random_positions = 1
-pc.charge_density = 0.7e27 #cubic meter
-pc.random_seed = 0
+my_constants.Zoffset=4*dz
+my_constants.Xoffset=0
+my_constants.Yoffset=0
+my_constants.Zplane=GO_bottom + Zoffset
 
-#pc.num = 1
-#pc_1.location = CN_x CN_y (CN_z + R_CN + 1e-9)
+pc.num = 1
+pc_1.location = CN_x CN_y (GO_bottom + Zoffset)
+pc_2.location  = (CN_x - Xoffset)    (CN_y - Yoffset)    (GO_bottom + Zoffset)
+pc_3.location  = (CN_x + Xoffset)    (CN_y + Yoffset)    (GO_bottom + Zoffset)
+pc_4.location  = (CN_x - 2*Xoffset)  (CN_y - 2*Yoffset)  (GO_bottom + Zoffset)
+pc_5.location  = (CN_x + 2*Xoffset)  (CN_y + 2*Yoffset)  (GO_bottom + Zoffset)
+pc_6.location  = (CN_x - 3*Xoffset)  (CN_y - 3*Yoffset)  (GO_bottom + Zoffset)
+pc_7.location  = (CN_x + 3*Xoffset)  (CN_y + 3*Yoffset)  (GO_bottom + Zoffset)
+pc_8.location  = (CN_x - 4*Xoffset)  (CN_y - 4*Yoffset)  (GO_bottom + Zoffset)
+pc_9.location  = (CN_x + 4*Xoffset)  (CN_y + 4*Yoffset)  (GO_bottom + Zoffset)
+pc_10.location = (CN_x - 5*Xoffset)  (CN_y - 5*Yoffset)  (GO_bottom + Zoffset)
+pc_11.location = (CN_x + 5*Xoffset)  (CN_y + 5*Yoffset)  (GO_bottom + Zoffset)
+pc_12.location = (CN_x - 6*Xoffset)  (CN_y - 6*Yoffset)  (GO_bottom + Zoffset)
+pc_13.location = (CN_x + 6*Xoffset)  (CN_y + 6*Yoffset)  (GO_bottom + Zoffset)
+pc_14.location = (CN_x - 7*Xoffset)  (CN_y - 7*Yoffset)  (GO_bottom + Zoffset)
+pc_15.location = (CN_x + 7*Xoffset)  (CN_y + 7*Yoffset)  (GO_bottom + Zoffset)
+pc_16.location = (CN_x - 8*Xoffset)  (CN_y - 8*Yoffset)  (GO_bottom + Zoffset)
+pc_17.location = (CN_x + 8*Xoffset)  (CN_y + 8*Yoffset)  (GO_bottom + Zoffset)
+pc_18.location = (CN_x - 9*Xoffset)  (CN_y - 9*Yoffset)  (GO_bottom + Zoffset)
+pc_19.location = (CN_x + 9*Xoffset)  (CN_y + 9*Yoffset)  (GO_bottom + Zoffset)
+pc_20.location = (CN_x - 10*Xoffset) (CN_y - 10*Yoffset) (GO_bottom + Zoffset)
+pc_21.location = (CN_x + 10*Xoffset) (CN_y + 10*Yoffset) (GO_bottom + Zoffset)
+pc_22.location = (CN_x - 11*Xoffset) (CN_y - 11*Yoffset) (GO_bottom + Zoffset)
+pc_23.location = (CN_x + 11*Xoffset) (CN_y + 11*Yoffset) (GO_bottom + Zoffset)
+pc_24.location = (CN_x - 12*Xoffset) (CN_y - 12*Yoffset) (GO_bottom + Zoffset)
+pc_25.location = (CN_x + 12*Xoffset) (CN_y + 12*Yoffset) (GO_bottom + Zoffset)
+pc_26.location = (CN_x - 13*Xoffset) (CN_y - 13*Yoffset) (GO_bottom + Zoffset)
+pc_27.location = (CN_x + 13*Xoffset) (CN_y + 13*Yoffset) (GO_bottom + Zoffset)
+pc_28.location = (CN_x - 14*Xoffset) (CN_y - 14*Yoffset) (GO_bottom + Zoffset)
+pc_29.location = (CN_x + 14*Xoffset) (CN_y + 14*Yoffset) (GO_bottom + Zoffset)
+pc_30.location = (CN_x - 15*Xoffset) (CN_y - 15*Yoffset) (GO_bottom + Zoffset)
+pc_31.location = (CN_x + 15*Xoffset) (CN_y + 15*Yoffset) (GO_bottom + Zoffset)
 
 ##################################################
 ###### TIME DEPENDENT SIMULATION PROPERTIES ######
@@ -228,15 +253,15 @@ domain.blocking_factor = nx/gx ny/gy nz/gz
 domain.prob_lo = -Lx/2. -Ly/2.  Lz_min
 domain.prob_hi =  Lx/2.  Ly/2.  Lz_max
 
-domain.is_periodic = 1 0 0
+domain.is_periodic = 0 0 0
 
 domain.coord_sys = cartesian
 
 #################################
 ###### BOUNDARY CONDITIONS ######
 #################################
-boundary.hi = per(0.) neu(0.) neu(0.)
-boundary.lo = per(0.) neu(0.) neu(0.)
+boundary.hi = neu(0.) neu(0.) neu(0.)
+boundary.lo = neu(0.) neu(0.) neu(0.)
 
 ####################################
 ###### MACROSCOPIC PROPERTIES ######
@@ -270,21 +295,21 @@ plot.rawfield_write_interval = 1000000
 use_diagnostics = 1
 
 diag.specify_using_eb = 1
-diag.objects = X_0 
-X_0.geom_type = plane
-X_0.direction = 0
-X_0.location = 0.0
-X_0.fields_to_plot = phi
+diag.objects = X_phi Z_rho Z_phi
+X_phi.geom_type = plane
+X_phi.direction = 0
+X_phi.location = 0.0
+X_phi.fields_to_plot = phi
 
-#Y_0.geom_type = plane
-#Y_0.direction = 1
-#Y_0.location = 0.0
-#Y_0.fields_to_plot = phi
-#
-#Z_0.geom_type = plane
-#Z_0.direction = 2
-#Z_0.location = 0.0
-#Z_0.fields_to_plot = phi
+Z_rho.geom_type = plane
+Z_rho.direction = 2
+Z_rho.location = Zplane
+Z_rho.fields_to_plot = charge_density
+
+Z_phi.geom_type = plane
+Z_phi.direction = 2
+Z_phi.location = Zplane
+Z_phi.fields_to_plot = phi
 ####################################
 ###### MLMG SOLVER PROPERTIES ######
 ####################################
