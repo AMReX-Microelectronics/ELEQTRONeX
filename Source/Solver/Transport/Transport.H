@@ -35,7 +35,7 @@ class c_TransportSolver
     int num_procs_with_sites;
     int site_size_loc_all_NS = 0;
 
-    std::vector<std::pair<int, int>> vec_biases;
+    std::vector<std::pair<amrex::Real, amrex::Real>> vec_biases;
 
     /*Broyden*/
     int num_field_sites_all_NS = 0;
