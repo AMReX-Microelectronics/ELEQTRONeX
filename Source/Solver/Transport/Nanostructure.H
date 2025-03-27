@@ -44,9 +44,9 @@ class c_Nanostructure_Base
                               RealTable1D const &h_n_curr_out_data,
                               RealTable1D const &h_Norm_data) = 0;
 
-    // virtual std::pair<int, int> Get_Biases() { return {0, 0}; } // Default:
-    // return (0,0) virtual void Gather_PotentialAtAtoms() {} virtual void
-    // Deposit_ChargeDensityToMesh() {}
+    virtual std::pair<int, int> Get_Biases() { return {0, 0}; }  // Default:
+    virtual void Gather_PotentialAtAtoms() {}
+    virtual void Deposit_ChargeDensityToMesh() {}
 };
 
 // Default trait: assume all materials need particle container.

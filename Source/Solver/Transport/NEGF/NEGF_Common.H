@@ -252,6 +252,12 @@ class c_NEGF_Common : protected MatrixBlock<T>, private c_IntegrationPath
     virtual ComplexType FermiFunction(ComplexType E_minus_Mu,
                                       const amrex::Real kT);
 
+    virtual ComplexType Get_DOS_const_multiplier(const ComplexType E)
+    {
+        ComplexType val(spin_degen / (2. * MathConst::pi), 0.);
+        return val;
+    }
+
     amrex::Real Compute_Conductance(const amrex::Vector<ComplexType> E_vec,
                                     const RealTable1D &Transmission_data,
                                     RealTable1D &Conductance_data);
@@ -349,7 +355,7 @@ class c_NEGF_Common : protected MatrixBlock<T>, private c_IntegrationPath
     s_AVG_Type avg_type;
     amrex::Vector<int> vec_avg_indices;
     amrex::Gpu::DeviceVector<int> gpuvec_avg_indices;
-    const int spin_degen = 2;
+    const amrex::Real spin_degen = 2.;
     amrex::Vector<int> block_degen_vec;
     amrex::Gpu::DeviceVector<int> block_degen_gpuvec;
     amrex::RealArray offset;

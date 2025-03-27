@@ -102,10 +102,11 @@ atomic_chain.type = atomic_chain
 atomic_chain.spring_constant_device_device  = 32 #50 # N/m
 atomic_chain.spring_constant_contact_contact  = 32 #25 # N/m
 atomic_chain.spring_constant_contact_device = 32 #37.5 # N/m
-atomic_chain.mass_device_atoms = 27.7 # amu = 4.6e-26 kg
-atomic_chain.mass_contact_atoms  = 27.7 #20 amu
+atomic_chain.mass_device_atoms = 4.6e-26 #20 amu
+atomic_chain.mass_contact_atoms = 4.6e-26 #20 amu
 atomic_chain.atom_spacing = 5.5e-10 
 atomic_chain.num_unitcells = N_unitcells
+atomic_chain.omega_scaling_factor = 1.e-3 
 atomic_chain.offset = AC_x AC_y AC_z
 
 atomic_chain.initialize_charge_ditribution = 0
@@ -113,19 +114,25 @@ atomic_chain.flag_write_charge_components = 0
 
 atomic_chain.contact_mu_specified = 1
 atomic_chain.contact_mu = Ef Ef
-atomic_chain.contact_T  = 298. 298.
+atomic_chain.contact_T  = 60 60
 
 atomic_chain.contact_Fermi_level = Ef
 atomic_chain.E_valence_min = 0
 atomic_chain.E_pole_max    = 3
-atomic_chain.eq_integration_pts = 30 30 30
+atomic_chain.E_zPlus_imag = 1e28
+atomic_chain.eq_integration_pts = 1000 0 0
+atomic_chain.num_noneq_paths = 1
 atomic_chain.noneq_integration_pts = 100
+atomic_chain.flag_compute_flatband_dos=1
+atomic_chain.flatband_dos_integration_pts=1000
+atomic_chain.flatband_dos_integration_limits = 0 1 #eV
+atomic_chain.Fermi_tail_factors = 3 3
 
 atomic_chain.write_at_iter = 1
 
 # decimation technique
-atomic_chain.use_decimation=1 
+atomic_chain.use_decimation=1
 atomic_chain.decimation_max_iter=50 
 atomic_chain.decimation_rel_error=1e-5 
-atomic_chain.decimation_layers=100
+atomic_chain.decimation_layers=200
 #####################################

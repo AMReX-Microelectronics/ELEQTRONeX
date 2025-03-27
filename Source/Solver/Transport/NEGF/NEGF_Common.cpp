@@ -2666,6 +2666,8 @@ void c_NEGF_Common<T>::Compute_DensityOfStates(std::string dos_foldername,
             auto *degen_vec_ptr = degen_vec.dataPtr();
             bool gpu_flag_write_LDOS = flag_write_LDOS;
 
+            ComplexType DOS_const_multiplier = Get_DOS_const_multiplier(E);
+
             amrex::ParallelFor(
                 blkCol_size_loc,
                 [=] AMREX_GPU_DEVICE(int n) noexcept
@@ -2764,11 +2766,11 @@ void c_NEGF_Common<T>::Compute_DensityOfStates(std::string dos_foldername,
 
 #ifdef COMPUTE_SPECTRAL_FUNCTION_OFFDIAG_ELEMS
                     ComplexType val =
-                        A_loc(n_glo, n).DiagDotSum(degen_vec_ptr) /
-                        (2. * MathConst::pi);
+                        A_loc(n_glo, n).DiagDotSum(degen_vec_ptr) *
+                        DOS_const_multiplier;
 #else
-                    ComplexType val = A_loc(n).DiagDotSum(degen_vec_ptr) /
-                                      (2. * MathConst::pi);
+                    ComplexType val = A_loc(n).DiagDotSum(degen_vec_ptr) *
+                                      DOS_const_multiplier;
 #endif
 
                     if (gpu_flag_write_LDOS) LDOS_loc(n) = val.real();
@@ -2801,8 +2803,7 @@ void c_NEGF_Common<T>::Compute_DensityOfStates(std::string dos_foldername,
                 amrex::ParallelDescriptor::ReduceRealSum(h_Trace_i[t]);
             }
 
-            h_DOS_loc(e_glo) =
-                spin_degen * h_Trace_r[0] / num_atoms_per_unitcell;
+            h_DOS_loc(e_glo) = h_Trace_r[0] / num_atoms_per_unitcell;
             h_Transmission_loc(e_glo) = h_Trace_r[1];
 
             if (flag_write_LDOS)

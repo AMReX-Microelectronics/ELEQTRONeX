@@ -20,12 +20,22 @@ class c_AtomicChain : public c_NEGF_Common<ComplexType[BLOCK_SIZE]>
     amrex::Real m_d;
     amrex::Real m_c;
     amrex::Real spacing;
+    amrex::Real omega_max;
+    amrex::Real omega_scaling_factor = 1;
 
     void Read_AtomicChainParameters(amrex::ParmParse &pp_ns);
     // void Set_AtomicChainParameters();
     void Print_AtomicChainParameters();
 
     s_Position3D get_AtomPosition(int field_id);
+
+    ComplexType Compute_zPlus(const amrex::Real omega_sq)
+    {
+        ComplexType zPlus(0., omega_scaling_factor *
+                                  (1. - sqrt(omega_sq) / omega_max) * omega_sq);
+        // ComplexType zPlus(0.,1e28);
+        return zPlus;
+    };
 
    protected:
     virtual void Read_MaterialSpecificNanostructureProperties() final;
@@ -59,6 +69,16 @@ class c_AtomicChain : public c_NEGF_Common<ComplexType[BLOCK_SIZE]>
 
     virtual void Compute_SurfaceGreensFunction(MatrixBlock<BlkType> &gr,
                                                const ComplexType EmU) final;
+
+    virtual ComplexType Get_DOS_const_multiplier(const ComplexType E) final
+    {
+        // ComplexType val(sqrt(E.real())/ (MathConst::pi * spacing), 0.);
+        // return val;
+        return sqrt(E) / (MathConst::pi * spacing);
+    };
+
+    virtual void Define_EnergyLimits() final;
+    virtual void Define_IntegrationPaths() final;
 
    public:
     static constexpr bool uses_particle_container = false;

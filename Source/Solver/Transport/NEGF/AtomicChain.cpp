@@ -16,6 +16,7 @@ void c_AtomicChain::Read_AtomicChainParameters(amrex::ParmParse &pp_ns)
     queryWithParser(pp_ns, "atom_spacing", spacing);
     queryWithParser(pp_ns, "mass_contact_atoms", m_c);
     queryWithParser(pp_ns, "mass_device_atoms", m_d);
+    queryWithParser(pp_ns, "omega_scaling_factor", omega_scaling_factor);
 }
 
 // void c_AtomicChain::Set_AtomicChainParameters() {}
@@ -222,9 +223,114 @@ void c_AtomicChain::Compute_SurfaceGreensFunction(MatrixBlock<BlkType> &gr,
     }
 }
 
-ComplexType c_AtomicChain::FermiFunction(ComplexType E_minus_Mu,
+ComplexType c_AtomicChain::FermiFunction(ComplexType omega_sq,
                                          const amrex::Real kT)
 {
     ComplexType one(1., 0.);
-    return one / (exp((sqrt(E_minus_Mu)) / kT) - one);
+    ComplexType hbarOmega = PhysConst::hbar_eVperHz * sqrt(omega_sq);
+
+    return one / (exp(hbarOmega / kT) - one);
+}
+
+void c_AtomicChain::Define_EnergyLimits()
+{
+    for (int c = 0; c < NUM_CONTACTS; ++c)
+    {
+        kT_contact[c] = PhysConst::kb_eVperK *
+                        Contact_Temperature[c]; /*set Temp in the input*/
+    }
+    mu_min = mu_contact[0];
+    mu_max = mu_contact[0];
+    kT_min = kT_contact[0];
+    kT_max = kT_contact[0];
+
+    flag_noneq_exists = false;
+
+    for (int c = 1; c < NUM_CONTACTS; ++c)
+    {
+        if (mu_min > mu_contact[c])
+        {
+            mu_min = mu_contact[c];
+        }
+        if (mu_max < mu_contact[c])
+        {
+            mu_max = mu_contact[c];
+        }
+        if (kT_min > kT_contact[c])
+        {
+            kT_min = kT_contact[c];
+        }
+        if (kT_max < kT_contact[c])
+        {
+            kT_max = kT_contact[c];
+        }
+    }
+    if (fabs(mu_min - mu_max) > 1e-8) flag_noneq_exists = true;
+    if (fabs(kT_min - kT_max) > 0.01) flag_noneq_exists = true;
+
+    /* Only the real part is set here. The imaginary part is set in
+     * Define_IntegrationPaths */
+    E_contour_left = pow((E_valence_min / PhysConst::hbar_eVperHz), 2);
+
+    omega_max =
+        (mu_max + Fermi_tail_factor_upper * kT_max) / PhysConst::hbar_eVperHz;
+    E_contour_right = pow(omega_max, 2) + E_zPlus;
+
+    E_rightmost = E_contour_right;
+
+    // if (flag_noneq_exists)
+    //{
+    //     amrex::Print() << "\n Nonequilibrium exists!\n";
+    // }
+    // else
+    //{
+    //     amrex::Print() << "\n Nonequilibrium doesn't exist!\n";
+    // }
+    amrex::Print() << " U_contact: ";
+    for (int c = 0; c < NUM_CONTACTS; ++c)
+    {
+        amrex::Print() << U_contact[c] << " ";
+    }
+    amrex::Print() << "\n";
+    amrex::Print() << " E_f: " << E_f << "\n";
+    amrex::Print() << " mu_min/max: " << mu_min << " " << mu_max << "\n";
+    amrex::Print() << " kT_min/max: " << kT_min << " " << kT_max << "\n";
+    amrex::Print() << " E_zPlus: " << E_zPlus << "\n";
+    amrex::Print() << " E_contour_left/E_contour_right: " << E_contour_left
+                   << "  " << E_contour_right << "\n";
+}
+
+void c_AtomicChain::Define_IntegrationPaths()
+{
+    /* Define_ContourPath_Rho0 */
+    ContourPath_Rho0.resize(1);
+    ContourPath_Rho0[0].Define_GaussLegendrePoints(E_contour_left,
+                                                   E_contour_right,
+                                                   eq_integration_pts[0], 0);
+
+    /* Here we add the imaginary part to each energy point */
+    amrex::Print() << "Printing E for equilibrium Rho0 path: \n";
+    for (ComplexType E : ContourPath_Rho0[0].E_vec)
+    {
+        E += Compute_zPlus(E.real());
+
+        amrex::Print() << E << "\n";
+    }
+
+    /* Define_ContourPath_DOS */
+    if (flag_compute_flatband_dos)
+    {
+        ContourPath_DOS.resize(1);
+        ComplexType min(flatband_dos_integration_limits[0], 0.);
+        ComplexType max(flatband_dos_integration_limits[1], 0.);
+        ContourPath_DOS[0].Define_GaussLegendrePoints(
+            min, max, flatband_dos_integration_pts, 0);
+
+        amrex::Print() << "Printing E for DOS path: \n";
+        for (ComplexType E : ContourPath_DOS[0].E_vec)
+        {
+            E += Compute_zPlus(E.real());
+            amrex::Print() << E << "\n";
+        }
+    }
 }
