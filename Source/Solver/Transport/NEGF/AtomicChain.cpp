@@ -227,7 +227,8 @@ ComplexType c_AtomicChain::FermiFunction(ComplexType omega_sq,
                                          const amrex::Real kT)
 {
     ComplexType one(1., 0.);
-    static constexpr auto hbar_eVperHz = static_cast<amrex::Real>(6.582119569e-16);
+    static constexpr auto hbar_eVperHz =
+        static_cast<amrex::Real>(6.582119569e-16);
     ComplexType hbarOmega = hbar_eVperHz * sqrt(omega_sq);
 
     return one / (exp(hbarOmega / kT) - one);
