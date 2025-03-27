@@ -137,7 +137,6 @@ class c_TransportSolver
     void Reset_ForNextBiasStep();
     void Obtain_maximum_time(amrex::Real const *total_time_counter_diff);
     void Define_CumulativeInfo_ForAllNS();
-    void Define_Only_ChargeDensityOut();
 
 #ifdef BROYDEN_PARALLEL
     void Deallocate_Broyden_Parallel();
@@ -197,6 +196,7 @@ class c_TransportSolver
     }
     void Solve(const int step, const amrex::Real time);
     void Cleanup();
+    void Define_Only_ChargeDensityOut();
 
 /* The following methods are public because
  * __device__ lambda cannot have private or protected access within its class.
