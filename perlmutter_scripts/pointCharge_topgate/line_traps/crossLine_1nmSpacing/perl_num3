@@ -1,0 +1,23 @@
+#!/bin/bash
+#SBATCH -N 8
+#SBATCH -C gpu
+#SBATCH -G 32
+#SBATCH -J out_ChargeNum3
+#SBATCH -q regular
+#SBATCH --mail-user=saurabhsawant@lbl.gov
+#SBATCH --mail-type=ALL
+#SBATCH -t 01:00:00
+#SBATCH -A m3766_g
+#SBATCH -o out_ChargeNum3.o%j
+#SBATCH -e out_ChargeNum3.e%j
+### SBATCH --reservation=weak_scaling_saurabh
+
+#OpenMP settings:
+export OMP_NUM_THREADS=1
+export OMP_PLACES=threads
+export OMP_PROC_BIND=spread
+
+
+#run the application:
+#applications may performance better with --gpu-bind=none instead of --gpu-bind=single:1 
+srun -n 32 -c 32 --cpu_bind=cores -G 32 --gpu-bind=single:1  ../../../../Exec/main3d.gnu.MPI.CUDA.EB.TD.TRAN.BROYPRLL.HYPRE.ex ../../../../input/negf/point_charges/topgate_CNTFET_cluster my_constants.Ef=-0.2 my_constants.Xoffset=1e-9 pc.num=3 my_constants.Vgs_max=1.0 my_constants.Vgs_min=-2 my_constants.Nsteps=31 plot.folder_name=/global/cfs/projectdirs/m4540/eXstatic/point_charge/topgate_CNTFET/crossCharge_1nmSpacing/ChargeNum3 use_diagnostics=1
