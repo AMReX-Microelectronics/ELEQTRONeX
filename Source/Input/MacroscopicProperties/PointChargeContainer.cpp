@@ -68,6 +68,23 @@ void c_PointChargeContainer::Define_OutputFile()
     }
 }
 
+
+std::string c_PointChargeContainer::Get_PointChargeDump_Filename()
+{
+    auto &rCode = c_Code::GetInstance();
+    auto &rOutput = rCode.get_Output();
+    int step = rCode.get_step();
+
+    std::string main_output_foldername = rOutput.get_folder_name();
+
+    std::string step_filename_prefix_str = main_output_foldername + "/point_charge/step";
+
+    std::string step_filename_str =
+    amrex::Concatenate(step_filename_prefix_str, step, 4);
+
+    return step_filename_str + ".dat";
+}
+
 void c_PointChargeContainer::Write_OutputFile()
 {
     if (ParallelDescriptor::IOProcessor())
@@ -456,6 +473,7 @@ void c_PointChargeContainer::Print_Container(bool print_positions)
     total_charge = 0.;
     total_charge_units = 0;
     amrex::Real THRESHOLD_REL_DIFF_TO_PRINT = 1.e-5;
+    bool have_all_converged = true;
     if (ParallelDescriptor::IOProcessor())
     {
         amrex::Print() << "Point Charges: \n";
@@ -486,14 +504,41 @@ void c_PointChargeContainer::Print_Container(bool print_positions)
                     amrex::Print() << ")";
                 }
                 amrex::Print() << "\n";
+                have_all_converged = false;
             }
             total_charge += all_charge_units[p] * all_occupations[p];
             total_charge_units += all_charge_units[p];
         }
         amrex::Print() << "total charge: " << total_charge << "\n";
+
+        if(have_all_converged) {
+            std::string filename = Get_PointChargeDump_Filename();
+
+            std::ofstream outfile;
+            outfile.open(filename.c_str(), std::ios::trunc);
+            outfile << "ID, Charge, Occupation, Potential, RelDiff, X, Y, Z (Optional)\n";
+            int np = all_charge_units.size();
+            for (int p = 0; p < np; ++p)
+            {
+                outfile << std::left    
+                    << std::setw(6) << all_particle_ids[p] 
+                    << std::setw(6) << all_charge_units[p] 
+                    << std::setprecision(8) << std::setw(12) << all_occupations[p]  
+                    << std::setprecision(8) << std::setw(12) << all_potentials[p]   
+                    << std::setw(15) << std::scientific << all_rel_diff[p]     
+                    << std::setw(15) << all_pos_x[p]        
+                    << std::setw(15) << all_pos_y[p]; 
+#if  AMREX_SPACEDIM == 3
+                outfile << std::setw(15) << all_pos_z[p];
+#endif                       
+                outfile << "\n";
+            }
+            outfile.close();
+        }
         Write_OutputFile();
     }
 }
+
 
 void c_PointChargeContainer::Compute_Occupation()
 {

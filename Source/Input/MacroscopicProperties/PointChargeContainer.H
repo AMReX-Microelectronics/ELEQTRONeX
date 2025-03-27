@@ -167,6 +167,8 @@ class c_PointChargeContainer
         const amrex::Vector<amrex::Vector<amrex::Real>> &particles,
         const amrex::Vector<amrex::Real> &vec_offset,
         const amrex::Vector<amrex::Real> &vec_max_bound);
+
+    std::string Get_PointChargeDump_Filename();
 };
 
 #endif
