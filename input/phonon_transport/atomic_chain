@@ -114,7 +114,7 @@ atomic_chain.flag_write_charge_components = 0
 
 atomic_chain.contact_mu_specified = 1
 atomic_chain.contact_mu = Ef Ef
-atomic_chain.contact_T  = 60 60
+atomic_chain.contact_T  = 298 298
 
 atomic_chain.contact_Fermi_level = Ef
 atomic_chain.E_valence_min = 0
