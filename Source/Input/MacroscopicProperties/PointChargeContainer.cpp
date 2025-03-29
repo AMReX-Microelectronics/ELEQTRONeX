@@ -511,26 +511,28 @@ void c_PointChargeContainer::Print_Container(bool print_positions)
         }
         amrex::Print() << "total charge: " << total_charge << "\n";
 
-        if(have_all_converged) {
+        if(!flag_vary_occupation or (flag_vary_occupation and have_all_converged)) {
             std::string filename = Get_PointChargeDump_Filename();
-
+            amrex::Print() << "Writing point charge files to: " << filename << "\n";
             std::ofstream outfile;
             outfile.open(filename.c_str(), std::ios::trunc);
             outfile << "ID, Charge, Occupation, Potential, RelDiff, X, Y, Z (Optional)\n";
-            int np = all_charge_units.size();
             for (int p = 0; p < np; ++p)
             {
                 outfile << std::left    
                     << std::setw(6) << all_particle_ids[p] 
                     << std::setw(6) << all_charge_units[p] 
-                    << std::setprecision(8) << std::setw(12) << all_occupations[p]  
-                    << std::setprecision(8) << std::setw(12) << all_potentials[p]   
-                    << std::setw(15) << std::scientific << all_rel_diff[p]     
-                    << std::setw(15) << all_pos_x[p]        
-                    << std::setw(15) << all_pos_y[p]; 
+                    << std::setprecision(8) << std::setw(10) << all_occupations[p]  
+                    << std::setprecision(8) << std::setw(10) << all_potentials[p]   
+                    << std::setw(16) << std::scientific << all_rel_diff[p];     
+                if (print_positions)
+                {
+                    outfile << std::setw(16) << all_pos_x[p]        
+                    << std::setw(16) << all_pos_y[p]; 
 #if  AMREX_SPACEDIM == 3
-                outfile << std::setw(15) << all_pos_z[p];
+                    outfile << std::setw(16) << all_pos_z[p];
 #endif                       
+                }
                 outfile << "\n";
             }
             outfile.close();

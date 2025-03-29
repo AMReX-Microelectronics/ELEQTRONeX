@@ -201,8 +201,8 @@ void c_MacroscopicProperties::Deposit_AllExternalChargeDensitySources()
             amrex::Gpu::streamSynchronize();
 
             amrex::Print() << "\nPrint after gather & occupation:\n";
-            p_PointChargeSource->Print_Container();
         }
+        p_PointChargeSource->Print_Container();
 
         p_PointChargeSource->Deposit(p_rho_mf);
     }

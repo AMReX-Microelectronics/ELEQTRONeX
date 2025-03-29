@@ -24,7 +24,7 @@ class c_ChargeDensitySource
         m_container.Define(particles);
     }
 
-    void Print_Container(bool print_positions = false)
+    void Print_Container(bool print_positions = true)
     {
         m_container.Print_Container(print_positions);
     }
