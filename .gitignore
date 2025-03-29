@@ -13,3 +13,7 @@ input_local/
 Analysis/*
 Unused_code/*
 Source_old/
+*.e*
+*.o*
+*_chargeComp.dat
+
