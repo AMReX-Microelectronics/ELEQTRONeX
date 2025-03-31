@@ -73,7 +73,7 @@ class c_PointChargeContainer
     amrex::Real Get_total_charge() { return total_charge; }
     amrex::Real Get_total_charge_units() { return total_charge_units; }
 
-    void Print_Container(bool print_positions = false);
+    void Print_Container();
 
     void Compute_Occupation();
 
@@ -150,6 +150,7 @@ class c_PointChargeContainer
    private:
     // static std::mutex mtx;
 
+    bool flag_write_individual_charge_files = false;
     bool flag_vary_occupation = false;
     bool flag_random_positions = false;
     amrex::Real charge_density = 0.;

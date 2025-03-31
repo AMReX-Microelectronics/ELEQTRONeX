@@ -225,6 +225,7 @@ void c_PointChargeContainer::Read_PointCharges()
     pp_main.query("default_occupation", default_occupation);
 
     pp_main.query("flag_random_positions", flag_random_positions);
+    pp_main.query("flag_write_individual_charge_files", flag_write_individual_charge_files);
 
     amrex::Print() << "pc.flag_vary_occupation: " << flag_vary_occupation
                    << "\n";
@@ -233,8 +234,8 @@ void c_PointChargeContainer::Read_PointCharges()
     amrex::Print() << "pc.mixing_factor: " << mixing_factor << "\n";
     amrex::Print() << "pc.default_charge_unit: " << default_charge_unit << "\n";
     amrex::Print() << "pc.default_occupation: " << default_occupation << "\n";
-    amrex::Print() << "pc.flag_random_positions: " << flag_random_positions
-                   << "\n";
+    amrex::Print() << "pc.flag_random_positions: " << flag_random_positions << "\n";
+    amrex::Print() << "pc.flag_write_individual_files: " << flag_write_individual_charge_files << "\n";
 
     int num = 0;
     int seed = std::random_device{}();
@@ -362,7 +363,7 @@ void c_PointChargeContainer::Define(
     AMREX_ALWAYS_ASSERT(particles.size() == TotalNumberOfParticles());
 }
 
-void c_PointChargeContainer::Print_Container(bool print_positions)
+void c_PointChargeContainer::Print_Container()
 {
     int lev = 0;
     Vector<int> particle_ids;
@@ -383,14 +384,11 @@ void c_PointChargeContainer::Print_Container(bool print_positions)
             occupations.push_back(soa_real[PCA::realPA::occupation][p]);
             potentials.push_back(soa_real[PCA::realPA::potential][p]);
             rel_diff.push_back(soa_real[PCA::realPA::rel_diff][p]);
-            if (print_positions)
-            {
-                pos_x.push_back(p_par[p].pos(0));
-                pos_y.push_back(p_par[p].pos(1));
+            pos_x.push_back(p_par[p].pos(0));
+            pos_y.push_back(p_par[p].pos(1));
 #if AMREX_SPACEDIM == 3
-                pos_z.push_back(p_par[p].pos(2));
+            pos_z.push_back(p_par[p].pos(2));
 #endif
-            }
         }
     }
 
@@ -425,15 +423,11 @@ void c_PointChargeContainer::Print_Container(bool print_positions)
         all_occupations.resize(total_particles);
         all_potentials.resize(total_particles);
         all_rel_diff.resize(total_particles);
-
-        if (print_positions)
-        {
-            all_pos_x.resize(total_particles);
-            all_pos_y.resize(total_particles);
+        all_pos_x.resize(total_particles);
+        all_pos_y.resize(total_particles);
 #if AMREX_SPACEDIM == 3
-            all_pos_z.resize(total_particles);
+        all_pos_z.resize(total_particles);
 #endif
-        }
     }
 
     // Gather data using Gatherv
@@ -453,21 +447,18 @@ void c_PointChargeContainer::Print_Container(bool print_positions)
                                 all_rel_diff.data(), recvcounts, displs,
                                 ParallelDescriptor::IOProcessorNumber());
 
-    if (print_positions)
-    {
-        ParallelDescriptor::Gatherv(pos_x.data(), local_num_particles,
-                                    all_pos_x.data(), recvcounts, displs,
-                                    ParallelDescriptor::IOProcessorNumber());
+    ParallelDescriptor::Gatherv(pos_x.data(), local_num_particles,
+                                all_pos_x.data(), recvcounts, displs,
+                                ParallelDescriptor::IOProcessorNumber());
 
-        ParallelDescriptor::Gatherv(pos_y.data(), local_num_particles,
-                                    all_pos_y.data(), recvcounts, displs,
-                                    ParallelDescriptor::IOProcessorNumber());
+    ParallelDescriptor::Gatherv(pos_y.data(), local_num_particles,
+                                all_pos_y.data(), recvcounts, displs,
+                                ParallelDescriptor::IOProcessorNumber());
 #if AMREX_SPACEDIM == 3
-        ParallelDescriptor::Gatherv(pos_z.data(), local_num_particles,
-                                    all_pos_z.data(), recvcounts, displs,
-                                    ParallelDescriptor::IOProcessorNumber());
+    ParallelDescriptor::Gatherv(pos_z.data(), local_num_particles,
+                                all_pos_z.data(), recvcounts, displs,
+                                ParallelDescriptor::IOProcessorNumber());
 #endif
-    }
 
     // Printing at root process and computing total charge
     total_charge = 0.;
@@ -484,26 +475,20 @@ void c_PointChargeContainer::Print_Container(bool print_positions)
             if (all_rel_diff[p] > THRESHOLD_REL_DIFF_TO_PRINT)
             {
                 amrex::Print()
-                    << std::left << "ID: " << std::setw(6)
+                    << std::left << "ID: " << std::defaultfloat << std::setw(6)
                     << all_particle_ids[p] << ", charge/(e): " << std::setw(6)
                     << all_charge_units[p]
                     << ", occupation: " << std::setprecision(8) << std::setw(12)
                     << all_occupations[p]
                     << ", phi/(V): " << std::setprecision(8) << std::setw(12)
                     << all_potentials[p] << ", phi_rel_diff: " << std::setw(15)
-                    << std::scientific << all_rel_diff[p];
-
-                if (print_positions)
-                {
-                    amrex::Print()
-                        << ", Position: (" << std::setw(10) << all_pos_x[p]
-                        << ", " << std::setw(10) << all_pos_y[p];
+                    << std::scientific << all_rel_diff[p]
+                    << ", Pos: (" << std::setw(10) << all_pos_x[p]
+                    << ", " << std::setw(10) << all_pos_y[p];
 #if AMREX_SPACEDIM == 3
-                    amrex::Print() << ", " << std::setw(10) << all_pos_z[p];
+                amrex::Print() << ", " << std::setw(10) << all_pos_z[p];
 #endif
-                    amrex::Print() << ")";
-                }
-                amrex::Print() << "\n";
+                amrex::Print() << ")\n";
                 have_all_converged = false;
             }
             total_charge += all_charge_units[p] * all_occupations[p];
@@ -511,31 +496,30 @@ void c_PointChargeContainer::Print_Container(bool print_positions)
         }
         amrex::Print() << "total charge: " << total_charge << "\n";
 
-        if(!flag_vary_occupation or (flag_vary_occupation and have_all_converged)) {
-            std::string filename = Get_PointChargeDump_Filename();
-            amrex::Print() << "Writing point charge files to: " << filename << "\n";
-            std::ofstream outfile;
-            outfile.open(filename.c_str(), std::ios::trunc);
-            outfile << "ID, Charge, Occupation, Potential, RelDiff, X, Y, Z (Optional)\n";
-            for (int p = 0; p < np; ++p)
-            {
-                outfile << std::left    
-                    << std::setw(6) << all_particle_ids[p] 
-                    << std::setw(6) << all_charge_units[p] 
-                    << std::setprecision(8) << std::setw(10) << all_occupations[p]  
-                    << std::setprecision(8) << std::setw(10) << all_potentials[p]   
-                    << std::setw(16) << std::scientific << all_rel_diff[p];     
-                if (print_positions)
+        if(flag_write_individual_charge_files) {
+            if(!flag_vary_occupation or (flag_vary_occupation and have_all_converged)) {
+                std::string filename = Get_PointChargeDump_Filename();
+                amrex::Print() << "Writing point charge files to: " << filename << "\n";
+                std::ofstream outfile;
+                outfile.open(filename.c_str(), std::ios::trunc);
+                outfile << "ID, Charge, Occupation, Potential, RelDiff, X, Y, Z (Optional)\n";
+                for (int p = 0; p < np; ++p)
                 {
-                    outfile << std::setw(16) << all_pos_x[p]        
-                    << std::setw(16) << all_pos_y[p]; 
+                    outfile << std::left << std::defaultfloat   
+                        << std::setw(6) << all_particle_ids[p] 
+                        << std::setw(20) << std::setprecision(8) << all_charge_units[p] 
+                        << std::setw(20) << all_occupations[p]  
+                        << std::setw(20) << all_potentials[p]   
+                        << std::setw(20) << std::scientific << all_rel_diff[p]
+                        << std::setw(20) << all_pos_x[p]        
+                        << std::setw(20) << all_pos_y[p]; 
 #if  AMREX_SPACEDIM == 3
-                    outfile << std::setw(16) << all_pos_z[p];
+                    outfile << std::setw(20) << all_pos_z[p];
 #endif                       
+                    outfile << "\n";
                 }
-                outfile << "\n";
+                outfile.close();
             }
-            outfile.close();
         }
         Write_OutputFile();
     }

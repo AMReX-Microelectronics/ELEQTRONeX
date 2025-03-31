@@ -323,7 +323,7 @@ int c_TransportSolver::Instantiate_Materials()
 
         NS_id_counter++;
     }
-    vec_biases.resize(NS_id_counter, std::make_pair(0, 0));
+    vec_biases.resize(NS_id_counter, std::make_pair(0., 0.));
 
     amrex::Print() << "NS_field_sites_cumulative: \n";
     for (auto offset : NS_field_sites_cumulative)

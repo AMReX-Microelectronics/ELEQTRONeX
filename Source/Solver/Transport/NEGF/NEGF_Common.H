@@ -557,8 +557,8 @@ class c_NEGF_Common : protected MatrixBlock<T>, private c_IntegrationPath
     amrex::Real get_Fermi_level() const { return E_f; }
 
     // for contact params
-    int get_Vds() const { return Vds; }
-    int get_Vgs() const { return Vgs; }
+    amrex::Real get_Vds() const { return Vds; }
+    amrex::Real get_Vgs() const { return Vgs; }
     std::string get_Gate_String() const { return Gate_String; }
     bool is_contact_mu_specified() const { return flag_contact_mu_specified; }
 

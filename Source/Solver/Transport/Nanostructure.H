@@ -26,7 +26,7 @@ class c_Nanostructure_Base
     virtual int Get_NumFieldSites_Local() = 0;
     virtual void Set_NumFieldSites_Local_NSOffset(int val) = 0;
     virtual int Get_Flag_WriteAtIter() = 0;
-    virtual std::pair<int, int> Get_Biases() = 0;
+    virtual std::pair<amrex::Real, amrex::Real> Get_Biases() = 0;
 
     virtual void Gather_PotentialAtAtoms() = 0;
     virtual int Solve_NEGF(RealTable1D &n_curr_out_data, int iter,
@@ -107,7 +107,7 @@ class c_Nanostructure
         return NSType::get_flag_write_at_iter();
     }
 
-    std::pair<int, int> Get_Biases() override
+    std::pair<amrex::Real, amrex::Real> Get_Biases() override
     {
         return std::make_pair(NSType::get_Vds(), NSType::get_Vgs());
     }
