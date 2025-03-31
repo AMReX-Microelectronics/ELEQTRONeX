@@ -2988,11 +2988,11 @@ void c_NEGF_Common<T>::Compute_InducedCharge(RealTable1D &n_curr_out_data)
 
         if (ParallelDescriptor::IOProcessor())
         {
-           if (flag_write_charge_components)
+            if (flag_write_charge_components)
             {
                 Write_ChargeComponents(iter_filename_str + "_chargeComp.dat",
-                                       h_RhoEq_data, h_RhoNonEq_data, h_Rho0_data,
-                                       h_RhoInduced_data);
+                                       h_RhoEq_data, h_RhoNonEq_data,
+                                       h_Rho0_data, h_RhoInduced_data);
             }
         }
     }
