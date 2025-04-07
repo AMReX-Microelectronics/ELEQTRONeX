@@ -3397,6 +3397,7 @@ void c_NEGF_Common<T>::Compute_RhoNonEq()
             int cumulative_columns = vec_cumu_blkCol_size[my_rank];
             int Hsize = Hsize_glo;
             auto &GC_ID = global_contact_index;
+            auto &CT_ID = contact_transmission_index;
             auto *degen_vec_ptr = degen_vec.dataPtr();
 
             amrex::Real const_multiplier =
@@ -4600,6 +4601,7 @@ void c_NEGF_Common<T>::Compute_Current()
             int cumulative_columns = vec_cumu_blkCol_size[my_rank];
             int Hsize = Hsize_glo;
             auto &GC_ID = global_contact_index;
+            auto &CT_ID = contact_transmission_index;
             auto *degen_vec_ptr = degen_vec.dataPtr();
 
             amrex::Real const_multiplier =
