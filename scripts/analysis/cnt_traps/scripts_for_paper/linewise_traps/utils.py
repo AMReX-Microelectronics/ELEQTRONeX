@@ -104,8 +104,8 @@ def compute_barrier(U, Vgs, fig, ax, Ef=-0.2, a=5, b=8, Print=True, Eg=0.4535):
     if(Print):           
         xmin = Vgs[-1]- 0.1
         xmax = Vgs[0] + 0.1
-        ymin = np.min(barrier)
-        ymax = np.max(phonon_jump)
+        ymin = -0.1
+        ymax = 0.6 #max range
         plt,pltname = custom_plot_single(fig, ax,
                                          [Vgs],
                                          [barrier],
