@@ -186,7 +186,7 @@ void c_MacroscopicProperties::Deposit_AllExternalChargeDensitySources()
 {
     auto &rCode = c_Code::GetInstance();
     auto &rGprop = rCode.get_GeometryProperties();
-
+    
     amrex::MultiFab *const p_rho_mf = get_p_mf("charge_density");
     amrex::MultiFab *const p_phi_mf = get_p_mf("phi");
 

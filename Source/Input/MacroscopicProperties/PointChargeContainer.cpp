@@ -235,10 +235,8 @@ void c_PointChargeContainer::Read_PointCharges()
     amrex::Print() << "pc.mixing_factor: " << mixing_factor << "\n";
     amrex::Print() << "pc.default_charge_unit: " << default_charge_unit << "\n";
     amrex::Print() << "pc.default_occupation: " << default_occupation << "\n";
-    amrex::Print() << "pc.flag_random_positions: " << flag_random_positions
-                   << "\n";
-    amrex::Print() << "pc.flag_write_individual_files: "
-                   << flag_write_individual_charge_files << "\n";
+    amrex::Print() << "pc.flag_random_positions: " << flag_random_positions << "\n";
+    amrex::Print() << "pc.flag_write_individual_charge_files: " << flag_write_individual_charge_files << "\n";
 
     int num = 0;
     int seed = std::random_device{}();
@@ -466,8 +464,7 @@ void c_PointChargeContainer::Print_Container()
     // Printing at root process and computing total charge
     total_charge = 0.;
     total_charge_units = 0;
-    amrex::Real THRESHOLD_REL_DIFF_TO_PRINT = 1.e-5;
-    bool have_all_converged = true;
+    amrex::Real THRESHOLD_REL_DIFF_TO_PRINT = 1e-3;
     if (ParallelDescriptor::IOProcessor())
     {
         amrex::Print() << "Point Charges: \n";
@@ -492,18 +489,18 @@ void c_PointChargeContainer::Print_Container()
                 amrex::Print() << ", " << std::setw(10) << all_pos_z[p];
 #endif
                 amrex::Print() << ")\n";
-                have_all_converged = false;
             }
             total_charge += all_charge_units[p] * all_occupations[p];
             total_charge_units += all_charge_units[p];
         }
         amrex::Print() << "total charge: " << total_charge << "\n";
 
-        if (flag_write_individual_charge_files)
-        {
-            if (!flag_vary_occupation or
-                (flag_vary_occupation and have_all_converged))
-            {
+        if(flag_write_individual_charge_files) {
+            auto &rCode = c_Code::GetInstance();
+            auto &rTransport = rCode.get_TransportSolver();
+            bool flag_close_to_convergence = rTransport.Is_Close_To_Convergence();
+
+            if(flag_close_to_convergence) {
                 std::string filename = Get_PointChargeDump_Filename();
                 amrex::Print()
                     << "Writing point charge files to: " << filename << "\n";
