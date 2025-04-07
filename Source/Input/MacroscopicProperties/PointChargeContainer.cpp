@@ -235,8 +235,10 @@ void c_PointChargeContainer::Read_PointCharges()
     amrex::Print() << "pc.mixing_factor: " << mixing_factor << "\n";
     amrex::Print() << "pc.default_charge_unit: " << default_charge_unit << "\n";
     amrex::Print() << "pc.default_occupation: " << default_occupation << "\n";
-    amrex::Print() << "pc.flag_random_positions: " << flag_random_positions << "\n";
-    amrex::Print() << "pc.flag_write_individual_charge_files: " << flag_write_individual_charge_files << "\n";
+    amrex::Print() << "pc.flag_random_positions: " << flag_random_positions
+                   << "\n";
+    amrex::Print() << "pc.flag_write_individual_charge_files: "
+                   << flag_write_individual_charge_files << "\n";
 
     int num = 0;
     int seed = std::random_device{}();
@@ -495,12 +497,15 @@ void c_PointChargeContainer::Print_Container()
         }
         amrex::Print() << "total charge: " << total_charge << "\n";
 
-        if(flag_write_individual_charge_files) {
+        if (flag_write_individual_charge_files)
+        {
             auto &rCode = c_Code::GetInstance();
             auto &rTransport = rCode.get_TransportSolver();
-            bool flag_close_to_convergence = rTransport.Is_Close_To_Convergence();
+            bool flag_close_to_convergence =
+                rTransport.Is_Close_To_Convergence();
 
-            if(flag_close_to_convergence) {
+            if (flag_close_to_convergence)
+            {
                 std::string filename = Get_PointChargeDump_Filename();
                 amrex::Print()
                     << "Writing point charge files to: " << filename << "\n";

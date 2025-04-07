@@ -121,7 +121,7 @@ class c_TransportSolver
     void Read_GatherAndDepositFields(amrex::ParmParse &pp);
     void Read_SelfConsistencyInput(amrex::ParmParse &pp);
     void Set_NEGFFolderDirectories();
-    
+
     void Create_NEGFFolderDirectories();
     void Assert_GatherAndDepositFields();
     void Define_InitialDepositValue();
@@ -207,7 +207,8 @@ class c_TransportSolver
     void Execute_Broyden_Modified_Second_Algorithm_Parallel();
     void Execute_Broyden_Modified_Second_Algorithm_Parallel_SkipGPU();
 #endif
-    bool Is_Close_To_Convergence() {
+    bool Is_Close_To_Convergence()
+    {
         return (Broyden_Norm <= Broyden_max_norm);
     }
 
