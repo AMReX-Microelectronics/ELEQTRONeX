@@ -23,9 +23,9 @@ By default, the code uses AMReX implementation of BiCGSTAB (Bi-Conjugate Gradien
 method for the multigrid solver for electrostatics. Alternatively, users have the flexibility to select from a range of methods or integrate with external libraries such as HYPRE (High-Performance Preconditioners) for enhanced robustness.
 
 Installation instructions for HYPRE are provided here:
-``` https://amrex-codes.github.io/amrex/tutorials_html/Hypre_Install.html ```
+``` https://amrex-codes.github.io/amrex/docs_html/LinearSolvers.html#external-solvers ```
 
-To compile the code with HYPRE, keep USE_HYPRE flag on.
+To compile the code with HYPRE, keep USE_HYPRE flag set to TRUE.
 
 ## Build
  Navigate to ELEQTRONeX/Exec/ and run:\
