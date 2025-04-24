@@ -16,7 +16,7 @@ Below are instructions for MPI/GPU installation with `USE_MPI=TRUE`, `USE_GPU=TR
 ## Download AMReX and ELEQTRONeX Repositories
 Make sure that AMReX and ELEQTRONeX are cloned at the same root location. \
 ``` >> git clone https://github.com/AMReX-Codes/amrex.git ``` \
-``` >> git clone https://AMReX-Microelectronics/ELEQTRONeX.git ```
+``` >> git clone https://github.com/AMReX-Microelectronics/ELEQTRONeX.git ```
 
 ## Dependencies
 By default, the code uses AMReX implementation of BiCGSTAB (Bi-Conjugate Gradient STABilized)
