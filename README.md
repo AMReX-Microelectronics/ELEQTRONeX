@@ -11,7 +11,7 @@ The framework comprises three major components: the electrostatic module, the qu
 Our community is here to help. Please report installation problems or general questions about the code in the github [Issues](https://github.com/AMReX-Microelectronics/ELEQTRONeX/issues) tab above.
 
 # Installation
-Below are instructions for MPI/GPU installation with `USE_MPI=TRUE`, `USE_GPU=TRUE` enabled.  
+Below are instructions for MPI/GPU installation with `USE_MPI=TRUE`, `USE_CUDA=TRUE` in the GNUmakefile.
 
 ## Download AMReX and ELEQTRONeX Repositories
 Make sure that AMReX and ELEQTRONeX are cloned at the same root location. \
@@ -25,10 +25,10 @@ method for the multigrid solver for electrostatics. Alternatively, users have th
 Installation instructions for HYPRE are provided here:
 ``` https://amrex-codes.github.io/amrex/docs_html/LinearSolvers.html#external-solvers ```
 
-To compile the code with HYPRE, keep USE_HYPRE flag set to TRUE.
+To compile the code with HYPRE, ensure that `USE_HYPRE=TRUE` in the GNUmakefile.
 
 ## Build
- Navigate to ELEQTRONeX/Exec/ and run:\
+ Navigate to ELEQTRONeX/Exec/ then edit the GNUmakefile accordingly and type:\
 ```>> make -j4```
 
 # Running ELEQTRONeX
@@ -55,10 +55,10 @@ This is a sample output visualized at `V = 0.1 V`.
 <img src="https://github.com/AMReX-Microelectronics/ELEQTRONeX/assets/42623728/fd43bd3c-79a9-4bfb-8a4c-2316877fb2a7" width="500" height="500">
 
 
-The output specific to NEGF is written out to `all_around_metal_test/negf` folder for each material structure. 
+The output specific to NEGF is written out to `Exec/all_around_metal/negf` folder for each material structure. 
 
 For this test, the data is written out to `cnt` subfolder, as specified in the input file, for each converged step as,
 `step<step_number>_<data_field>.dat` where data_field can be `Qout`: induced charge, `norm`: norm after convergence, `U`: electrostatic potential on the surface of the tube.
 In addition, data for each iteration in a given step is outputted to `step<step_number>_iter/` folder.
 
-This data can be visualized using a simple python script, `scripts/analysis/all_around_metal/bandstructure.ipynb`.
+This data can be visualized using a simple python script, `ELEQTRONeX/scripts/analysis/all_around_metal/bandstructure.ipynb`.
