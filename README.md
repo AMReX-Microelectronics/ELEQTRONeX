@@ -39,7 +39,7 @@ Leonard, F., & Stewart, D. A. (2006). Properties of short channel ballistic carb
 
 Run the test case as,
 
-```>> ./<compile_binary> ../input/negf/all_around_metal```
+```>> ./<compile_binary> ../input/negf/validation_studies/all_around_metal```
 
 A folder named, `Exec/all_around_metal_test`, will be generated in which output will be written out. Location of this folder can be changed using `plot.folder_name` parameter in the input file.
 
@@ -61,4 +61,4 @@ For this test, the data is written out to `cnt` subfolder, as specified in the i
 `step<step_number>_<data_field>.dat` where data_field can be `Qout`: induced charge, `norm`: norm after convergence, `U`: electrostatic potential on the surface of the tube.
 In addition, data for each iteration in a given step is outputted to `step<step_number>_iter/` folder.
 
-This data can be visualized using a simple python script, `scripts/all_around_metal/bandstructure.ipynb`.
+This data can be visualized using a simple python script, `scripts/analysis/all_around_metal/bandstructure.ipynb`.
