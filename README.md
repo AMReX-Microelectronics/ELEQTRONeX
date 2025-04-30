@@ -5,7 +5,7 @@ This is a framework for electrostatic-quantum transport modeling of nanomaterial
 
 The framework comprises three major components: the electrostatic module, the quantum transport module, and the part that self-consistently couples the two modules. The electrostatic module computes the electrostatic potential induced by charges on the surface of carbon nanotubes, as well as by source, drain, and gate terminals, which can be modeled as embedded boundaries with intricate shapes. The quantum transport module uses the nonequilibrium Green's function (NEGF) method to model induced charge. Currently, it supports coherent (ballistic) transport, contacts modeled as semi-infinite leads, and Hamiltonian representation using the tight-binding approximation. The self-consistency between the two modules is achieved using Broyden's modified second algorithm, which is parallelized on both CPUs and GPUs. Preliminary studies have demonstrated that the electrostatic and quantum transport modules can compute the potential on billions of grid cells and compute the Green's function for a material with millions of site locations within a couple of seconds, respectively. 
 
-![Summary_ELEQTRONeX](https://github.com/AMReX-Microelectronics/eXstatic/assets/42623728/bb489e73-8530-4a48-9992-0caf2b206588)
+![Summary_ELEQTRONeX](https://github.com/AMReX-Microelectronics/ELEQTRONeX/assets/42623728/bb489e73-8530-4a48-9992-0caf2b206588)
 
 # Getting Help
 Our community is here to help. Please report installation problems or general questions about the code in the github [Issues](https://github.com/AMReX-Microelectronics/ELEQTRONeX/issues) tab above.

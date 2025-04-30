@@ -36,7 +36,7 @@ my_constants.Vgs_max = 12
 my_constants.Nsteps =  65
 my_constants.dt = 1./(Nsteps-1)
 
-plot.folder_name = /global/cfs/projectdirs/m4540/eXstatic/4x_spacing/periodic
+plot.folder_name = /global/cfs/projectdirs/m3766/ELEQTRONeX/4x_spacing/periodic
 plot.write_after_init = 1
 plot.write_interval = 1
 

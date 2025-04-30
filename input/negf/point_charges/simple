@@ -28,7 +28,7 @@ my_constants.Nsteps = 1
 my_constants.dt = 1
 
 plot.folder_name = point_charge_simple
-#plot.folder_name = /global/cfs/projectdirs/m4540/eXstatic/point_charge_simple
+#plot.folder_name = /global/cfs/projectdirs/m3766/ELEQTRONeX/point_charge_simple
 plot.write_after_init = 1
 plot.write_interval = 1
 
