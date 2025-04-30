@@ -7,7 +7,7 @@
 #SBATCH --mail-user=saurabhsawant@lbl.gov
 #SBATCH --mail-type=ALL
 #SBATCH -t 01:00:00
-#SBATCH -A m4540_g
+#SBATCH -A m3766_g
 #SBATCH -o out_ChargeNum3.o%j
 #SBATCH -e out_ChargeNum3.e%j
 ### SBATCH --reservation=weak_scaling_saurabh
