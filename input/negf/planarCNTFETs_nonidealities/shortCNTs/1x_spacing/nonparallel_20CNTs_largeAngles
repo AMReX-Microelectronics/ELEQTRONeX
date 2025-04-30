@@ -37,7 +37,7 @@ my_constants.Vgs_max = 8
 my_constants.Nsteps =  25
 my_constants.dt = 1./(Nsteps-1)
 
-plot.folder_name = /global/cfs/projectdirs/m4540/eXstatic/nonparallel_20CNTs_largeAngles
+plot.folder_name = /global/cfs/projectdirs/m3766/ELEQTRONeX/nonparallel_20CNTs_largeAngles
 plot.write_after_init = 1
 plot.write_interval = 1
 

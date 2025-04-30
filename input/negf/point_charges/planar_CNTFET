@@ -30,7 +30,7 @@ my_constants.Nsteps =  9
 my_constants.dt = 1./(Nsteps-1)
 
 
-plot.folder_name = /global/cfs/projectdirs/m4540/eXstatic/point_charge/planar_CNTFET_short
+plot.folder_name = /global/cfs/projectdirs/m3766/ELEQTRONeX/point_charge/planar_CNTFET_short
 #plot.folder_name = planar_CNTFET_10nm
 plot.write_after_init = 1
 plot.write_interval = 1

@@ -18,7 +18,7 @@ my_constants.gy = 256
 my_constants.gz = 1
 
 my_constants.N_unitcells = 4096*32
-plot.folder_name = /global/cfs/projectdirs/m4540/eXstatic/eql_scaling/gpu256
+plot.folder_name = /global/cfs/projectdirs/m3766/ELEQTRONeX/eql_scaling/gpu256
 NS_default.num_recursive_parts = 32
 ##################################
 ##### USER DEFINED CONSTANTS #####

@@ -20,4 +20,4 @@ export OMP_PROC_BIND=spread
 
 #run the application:
 #applications may performance better with --gpu-bind=none instead of --gpu-bind=single:1 
-srun -n 32 -c 32 --cpu_bind=cores -G 32 --gpu-bind=single:1  ../../../../Exec/main3d.gnu.MPI.CUDA.EB.TD.TRAN.BROYPRLL.HYPRE.ex ../../../../input/negf/point_charges/topgate_CNTFET_3Drand pc.Et=0.02 pc.V0=0.5 pc.mixing_factor=0.02 pc.charge_density=0.7e27 my_constants.Vgs_max=0.5 my_constants.Vgs_min=-1.6 my_constants.Nsteps=21 plot.folder_name=/global/cfs/projectdirs/m4540/eXstatic/point_charge/topgate_CNTFET/rhoDot7_RandomSeed/RandomSeed6 use_diagnostics=0 pc.random_seed=6 #restart=1 restart_step=7 
+srun -n 32 -c 32 --cpu_bind=cores -G 32 --gpu-bind=single:1  ../../../../Exec/main3d.gnu.MPI.CUDA.EB.TD.TRAN.BROYPRLL.HYPRE.ex ../../../../input/negf/point_charges/topgate_CNTFET_3Drand pc.Et=0.02 pc.V0=0.5 pc.mixing_factor=0.02 pc.charge_density=0.7e27 my_constants.Vgs_max=0.5 my_constants.Vgs_min=-1.6 my_constants.Nsteps=21 plot.folder_name=/global/cfs/projectdirs/m3766/ELEQTRONeX/point_charge/topgate_CNTFET/rhoDot7_RandomSeed/RandomSeed6 use_diagnostics=0 pc.random_seed=6 #restart=1 restart_step=7
