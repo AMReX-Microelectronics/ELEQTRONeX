@@ -4,13 +4,10 @@
 #SBATCH -G 32
 #SBATCH -J out_rhoDot7_qFixed_ZcenterGO
 #SBATCH -q regular
-#SBATCH --mail-user=saurabhsawant@lbl.gov
-#SBATCH --mail-type=ALL
 #SBATCH -t 03:00:00
-#SBATCH -A m3766_g
+#SBATCH -A m3766
 #SBATCH -o out_rhoDot7_qFixed_ZcenterGO.o%j
 #SBATCH -e out_rhoDot7_qFixed_ZcenterGO.e%j
-### SBATCH --reservation=weak_scaling_saurabh
 
 #OpenMP settings:
 export OMP_NUM_THREADS=1
