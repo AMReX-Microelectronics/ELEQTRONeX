@@ -6,7 +6,7 @@
 #SBATCH -q regular
 #SBATCH --mail-user=saurabhsawant@lbl.gov
 #SBATCH --mail-type=ALL
-#SBATCH -t 01:00:00
+#SBATCH -t 04:00:00
 #SBATCH -A m3766_g
 #SBATCH -o out_Zoff4dz.o%j
 #SBATCH -e out_Zoff4dz.e%j
