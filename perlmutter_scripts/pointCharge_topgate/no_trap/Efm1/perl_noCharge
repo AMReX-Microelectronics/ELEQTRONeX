@@ -4,7 +4,7 @@
 #SBATCH -G 32
 #SBATCH -J Efm1_noCharge
 #SBATCH -q regular
-#SBATCH -t 01:00:00
+#SBATCH -t 04:00:00
 #SBATCH -A m3766
 #SBATCH -o out_Efm1_noCharge.o%j
 #SBATCH -e out_Efm1_noCharge.e%j
