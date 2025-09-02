@@ -23,13 +23,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04]
-        hypre: [OFF]
+        hypre: [OFF, ON]
         amrex_mode: [internal, external_src]
         include:
         - os: ubuntu-22.04
           install_deps: sudo apt-get install mpich libmpich-dev
           comp: gnu
           procs: $(nproc)
+        - hypre: ON
+          hypre_version: "2.32.0"
 
     steps:
 
@@ -60,13 +62,35 @@ jobs:
     - name: Set Up Cache
       uses: actions/cache@v4
       with:
-        path: ~/.cache/ccache
+        path: |
+          ~/.cache/ccache
+          ~/.cache/hypre-${{matrix.hypre_version}}
         key: ccache-${{ github.workflow }}-${{ github.job }}-git-${{ github.sha }}
         restore-keys: |
              ccache-${{ github.workflow }}-${{ github.job }}-git-
 
+    - name: Build Hypre
+      if: matrix.hypre == 'ON'
+      run: |
+        export HYPRE_HOME=~/.cache/hypre-${{matrix.hypre_version}}
+        if [ ! -d "${HYPRE_HOME}" ]; then
+          wget -q https://github.com/hypre-space/hypre/archive/refs/tags/v${{matrix.hypre_version}}.tar.gz
+          tar xfz v${{matrix.hypre_version}}.tar.gz
+          cd hypre-${{matrix.hypre_version}}/src
+          ./configure --with-cxxstandard=17 --enable-bigint --prefix=${HYPRE_HOME}
+          make -j ${{matrix.procs}}
+          make install
+          cd ../../
+        fi
+        echo "HYPRE_ROOT=${HYPRE_HOME}" >> $GITHUB_ENV
+
     - name: Configure CMake
       run: |
+        HYPRE_ARG=""
+        if [ "${{matrix.hypre}}" == "ON" ]; then
+          HYPRE_ARG="-DHYPRE_ROOT=${HYPRE_ROOT}"
+        fi
+
         if [ "${{matrix.amrex_mode}}" == "external_src" ]; then
           cmake \
             -B${{runner.workspace}}/ELEQTRONeX/build-${{matrix.os}}-${{matrix.hypre}}-${{matrix.amrex_mode}} \
@@ -79,6 +103,7 @@ jobs:
             -DELEQTRONeX_TIME_DEPENDENT:BOOL=ON \
             -DELEQTRONeX_BROYDEN_PARALLEL:BOOL=ON \
             -DELEQTRONeX_HYPRE:BOOL=${{matrix.hypre}} \
+            ${HYPRE_ARG} \
             -DELEQTRONeX_amrex_src:PATH=${{env.AMREX_SRC_DIR}} \
             ${{github.workspace}};
         else
@@ -93,6 +118,7 @@ jobs:
             -DELEQTRONeX_TIME_DEPENDENT:BOOL=ON \
             -DELEQTRONeX_BROYDEN_PARALLEL:BOOL=ON \
             -DELEQTRONeX_HYPRE:BOOL=${{matrix.hypre}} \
+            ${HYPRE_ARG} \
             ${{github.workspace}};
         fi
 
