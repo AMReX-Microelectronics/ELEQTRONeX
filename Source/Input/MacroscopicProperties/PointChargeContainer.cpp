@@ -38,7 +38,7 @@ void c_PointChargeContainer::Define_OutputFile()
     {
         auto &rCode = c_Code::GetInstance();
         auto &rOutput = rCode.get_Output();
-        int step = rCode.get_step();
+        [[maybe_unused]] int step = rCode.get_step();
         std::string main_output_foldername = rOutput.get_folder_name();
         std::string pc_foldername = main_output_foldername + "/point_charge";
 
@@ -540,20 +540,20 @@ void c_PointChargeContainer::Compute_Occupation()
     auto &rCode = c_Code::GetInstance();
     auto &rGprop = rCode.get_GeometryProperties();
 
-    const auto &plo = rGprop.geom.ProbLoArray();
-    const auto &dx = rGprop.geom.CellSizeArray();
+    [[maybe_unused]] const auto &plo = rGprop.geom.ProbLoArray();
+    [[maybe_unused]] const auto &dx = rGprop.geom.CellSizeArray();
 
     int lev = 0;
     for (c_PointChargeContainer::ParIter pti(*this, lev); pti.isValid(); ++pti)
     {
         auto np = pti.numParticles();
         const auto &particles = pti.GetArrayOfStructs();
-        const auto *p_par = particles().data();
+        [[maybe_unused]] const auto *p_par = particles().data();
 
-        const auto &soa_real = pti.get_realPA();
+        [[maybe_unused]] const auto &soa_real = pti.get_realPA();
 
-        auto get_V0 = Get_V0();
-        auto get_Et = Get_Et();
+        [[maybe_unused]] auto get_V0 = Get_V0();
+        [[maybe_unused]] auto get_Et = Get_Et();
 
         auto &par_potential = pti.get_potential();
         auto *p_potential = par_potential.data();
@@ -562,10 +562,10 @@ void c_PointChargeContainer::Compute_Occupation()
         auto *p_occupation = par_occupation.data();
 
         auto &par_charge_unit = pti.get_charge_unit();
-        auto *p_charge_unit = par_charge_unit.data();
+        [[maybe_unused]] auto *p_charge_unit = par_charge_unit.data();
 
         auto &par_rel_diff = pti.get_relative_difference();
-        auto *p_par_rel_diff = par_rel_diff.data();
+        [[maybe_unused]] auto *p_par_rel_diff = par_rel_diff.data();
 
         amrex::Real V0 = Get_V0();
         amrex::Real Et = Get_Et();

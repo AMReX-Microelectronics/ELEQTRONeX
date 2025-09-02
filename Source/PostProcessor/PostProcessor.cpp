@@ -62,7 +62,7 @@ int c_PostProcessor::ReadData()
 
     amrex::ParmParse pp_postprocess("post_process");
 
-    bool varnames_specified =
+    [[maybe_unused]] bool varnames_specified =
         pp_postprocess.queryarr("fields_to_process", m_fields_to_process);
 
     std::map<std::string, int>::iterator it_map_param_all;

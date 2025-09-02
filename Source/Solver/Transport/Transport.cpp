@@ -398,7 +398,7 @@ void c_TransportSolver::Solve(const int step, const amrex::Real time)
             rMprop.ReInitializeMacroparam(NS_gather_field_str);
             rMLMG.UpdateBoundaryConditions(flag_update_terminal_bias);
 
-            auto mlmg_solve_time = rMLMG.Solve_PoissonEqn();
+            [[maybe_unused]] auto mlmg_solve_time = rMLMG.Solve_PoissonEqn();
             rPostPro.Compute();
             // rOutput.WriteOutput(m_iter+100, time);
 

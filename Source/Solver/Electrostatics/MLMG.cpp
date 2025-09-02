@@ -435,7 +435,7 @@ void c_MLMGSolver::Setup_MLEBABecLaplacian_ForPoissonEqn()
     // see Src/Boundary/AMReX_LO_BCTYPES.H for supported types
     p_mlebabec->setDomainBC(LinOpBCType_2d[0], LinOpBCType_2d[1]);
 
-    auto &rBC = rCode.get_BoundaryConditions();
+    [[maybe_unused]] auto &rBC = rCode.get_BoundaryConditions();
     // Fill the ghost cells of each grid from the other grids
     // includes periodic domain boundaries
 

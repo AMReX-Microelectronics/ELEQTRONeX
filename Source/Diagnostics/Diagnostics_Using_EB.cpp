@@ -53,7 +53,7 @@ void c_Diagnostics_Using_EB::ReadEBDiagnostics()
     amrex::Print() << "##### diag.support: " << eb_support_str << "\n";
 
     num_objects = 0;
-    bool basic_objects_specified =
+    [[maybe_unused]] bool basic_objects_specified =
         pp_diag.queryarr("objects", vec_object_names);
     int c = 0;
     for (auto it : vec_object_names)
@@ -142,7 +142,7 @@ void c_Diagnostics_Using_EB::ReadEBObjectInfo(std::string object_name,
                            << cyl.has_fluid_inside << "\n";
 
             amrex::Vector<std::string> fields_to_plot;
-            bool varnames_specified =
+            [[maybe_unused]] bool varnames_specified =
                 pp_object.queryarr("fields_to_plot", fields_to_plot);
 
             cyl.num_params_plot_single_level =
@@ -192,7 +192,7 @@ void c_Diagnostics_Using_EB::ReadEBObjectInfo(std::string object_name,
                     std::to_string(PH[plane.direction]) + "]");
 
             amrex::Vector<std::string> fields_to_plot;
-            bool varnames_specified =
+            [[maybe_unused]] bool varnames_specified =
                 pp_object.queryarr("fields_to_plot", fields_to_plot);
 
             plane.num_params_plot_single_level =
@@ -292,6 +292,9 @@ void c_Diagnostics_Using_EB::CreateFactory()
                 // ObtainSingleObjectFactory<IFType>(name, object_IF);
                 break;
             }
+            default:
+                // Handle unhandled enumeration values
+                break;
         }
     }
     amrex::Print() << "After index space size : "
@@ -347,7 +350,7 @@ void c_Diagnostics_Using_EB::ComputeAndWriteEBDiagnostics(int step,
 
     auto &rCode = c_Code::GetInstance();
     auto &rMprop = rCode.get_MacroscopicProperties();
-    auto &rGprop = rCode.get_GeometryProperties();
+    [[maybe_unused]] auto &rGprop = rCode.get_GeometryProperties();
     auto &rOutput = rCode.get_Output();
     _foldername_str = rOutput.get_folder_name() + "/diag/";
     CreateDirectory(_foldername_str);
@@ -458,6 +461,9 @@ void c_Diagnostics_Using_EB::ComputeAndWriteEBDiagnostics(int step,
                 vec_pSliceMF_UPtr.clear();
                 break;
             }
+            default:
+                // Handle unhandled enumeration values
+                break;
         }
     }
 #ifdef PRINT_NAME

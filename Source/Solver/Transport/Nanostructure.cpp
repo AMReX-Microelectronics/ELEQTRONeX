@@ -26,9 +26,9 @@ c_Nanostructure<NSType>::c_Nanostructure(
     const std::string NS_deposit_str,
     const amrex::Real NS_initial_deposit_value, const int use_negf,
     const std::string negf_foldername_str)
-    : _geom(&geom),
-      amrex::ParticleContainer<realPD::NUM, intPD::NUM, realPA::NUM,
-                               intPA::NUM>(geom, dm, ba)
+    : amrex::ParticleContainer<realPD::NUM, intPD::NUM, realPA::NUM,
+                               intPA::NUM>(geom, dm, ba),
+      _geom(&geom)
 {
     auto &rCode = c_Code::GetInstance();
     _use_electrostatic = rCode.use_electrostatic;
