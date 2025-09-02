@@ -74,7 +74,7 @@ void c_Diagnostics::ReadDiagnostics()
     amrex::Print() << "##### diag.specify_using_eb: " << specify_using_eb
                    << "\n";
 
-#if AMREX_USE_EB
+#ifdef AMREX_USE_EB
     if (specify_using_eb)
     {
         ReadEBDiagnostics();
@@ -100,7 +100,7 @@ void c_Diagnostics::InitData()
     auto &rCode = c_Code::GetInstance();
     auto &rGprop = rCode.get_GeometryProperties();
 
-#if AMREX_USE_EB
+#ifdef AMREX_USE_EB
     if (specify_using_eb)
     {
         SetGeometry(&rGprop.geom, &rGprop.ba, &rGprop.dm, specify_using_eb);
