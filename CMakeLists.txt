@@ -146,6 +146,7 @@ if(ELEQTRONeX_APP)
     target_link_libraries(${binary_name} PRIVATE AMReX::amrex)
 
     # Set compile definitions based on options
+    # Matching gnumake here - this will be a redefinition as a workaround for nonstandard code
     if(ELEQTRONeX_EB)
         target_compile_definitions(${binary_name} PRIVATE AMREX_USE_EB)
     endif()
