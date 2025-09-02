@@ -444,7 +444,7 @@ void c_NEGF_Common<T>::Read_PotentialProfileParams(amrex::ParmParse &pp_ns)
 template <typename T>
 void c_NEGF_Common<T>::Read_EqContourIntgPts(amrex::ParmParse &pp_ns)
 {
-    auto is_specified_eq = queryArrWithParser(pp_ns, "eq_integration_pts",
+    [[maybe_unused]] auto is_specified_eq = queryArrWithParser(pp_ns, "eq_integration_pts",
                                               eq_integration_pts, 0, 3);
 }
 
@@ -464,7 +464,7 @@ void c_NEGF_Common<T>::Read_FlatbandDOSParams(amrex::ParmParse &pp_ns)
 
     queryWithParser(pp_ns, "flatband_dos_integration_pts",
                     flatband_dos_integration_pts);
-    auto is_specified_dos_limit =
+    [[maybe_unused]] auto is_specified_dos_limit =
         queryArrWithParser(pp_ns, "flatband_dos_integration_limits",
                            flatband_dos_integration_limits, 0, 2);
 }
@@ -472,7 +472,7 @@ void c_NEGF_Common<T>::Read_FlatbandDOSParams(amrex::ParmParse &pp_ns)
 template <typename T>
 void c_NEGF_Common<T>::Read_NonEqPathParams(amrex::ParmParse &pp_ns)
 {
-    auto flag_num_noneq_paths =
+    [[maybe_unused]] auto flag_num_noneq_paths =
         queryWithParser(pp_ns, "num_noneq_paths", num_noneq_paths);
 
     if (num_noneq_paths > 1)
@@ -491,7 +491,7 @@ void c_NEGF_Common<T>::Read_NonEqPathParams(amrex::ParmParse &pp_ns)
         }
     }
 
-    auto flag_noneq_intg_pts =
+    [[maybe_unused]] auto flag_noneq_intg_pts =
         queryArrWithParser(pp_ns, "noneq_integration_pts",
                            noneq_integration_pts, 0, num_noneq_paths);
 }
@@ -530,7 +530,7 @@ void c_NEGF_Common<T>::Read_AdaptiveIntegrationParams(amrex::ParmParse &pp_ns)
         pp_ns.query("integrand_correction_interval",
                     integrand_correction_interval);
 
-        auto flag_kT_window_around_singularity =
+        [[maybe_unused]] auto flag_kT_window_around_singularity =
             queryArrWithParser(pp_ns, "kT_window_around_singularity",
                                kT_window_around_singularity, 0, 2);
 
@@ -2416,7 +2416,7 @@ void c_NEGF_Common<T>::Compute_DensityOfStates(std::string dos_foldername,
     auto const &h_minusHa_loc = h_minusHa_loc_data.table();
     auto const &h_Hb_loc = h_Hb_loc_data.table();
     auto const &h_Hc_loc = h_Hc_loc_data.table();
-    auto const &h_tau = h_tau_glo_data.table();
+    [[maybe_unused]] auto const &h_tau = h_tau_glo_data.table();
     auto const &h_DOS_loc = h_DOS_loc_data.table();
     auto const &h_Transmission_loc = h_Transmission_loc_data.table();
 
@@ -2471,19 +2471,19 @@ void c_NEGF_Common<T>::Compute_DensityOfStates(std::string dos_foldername,
     auto const &A_loc = h_A_loc_data.table();
     /*constant references*/
     auto const &Alpha = h_Alpha_loc_data.const_table();
-    auto const &Xtil_glo = h_Xtil_glo_data.const_table();
+    [[maybe_unused]] auto const &Xtil_glo = h_Xtil_glo_data.const_table();
 
-    auto const &Ytil_glo = h_Ytil_glo_data.const_table();
+    [[maybe_unused]] auto const &Ytil_glo = h_Ytil_glo_data.const_table();
     auto const &X = h_X_loc_data.const_table();
     auto const &Y = h_Y_loc_data.const_table();
 
     auto const &Alpha_contact = h_Alpha_contact_data.const_table();
     auto const &X_contact = h_X_contact_data.const_table();
     auto const &Y_contact = h_Y_contact_data.const_table();
-    auto const &Sigma_contact = h_Sigma_contact_data.const_table();
+    [[maybe_unused]] auto const &Sigma_contact = h_Sigma_contact_data.const_table();
 
-    auto *trace_r = h_Trace_r.dataPtr();
-    auto *trace_i = h_Trace_i.dataPtr();
+    [[maybe_unused]] auto *trace_r = h_Trace_r.dataPtr();
+    [[maybe_unused]] auto *trace_i = h_Trace_i.dataPtr();
     auto &degen_vec = block_degen_vec;
     auto const &LDOS_loc = h_LDOS_loc_data.table();
 #endif
@@ -2630,7 +2630,7 @@ void c_NEGF_Common<T>::Compute_DensityOfStates(std::string dos_foldername,
 #endif
 
             /*following is for lambda capture*/
-            int cumulative_columns = vec_cumu_blkCol_size[my_rank];
+            [[maybe_unused]] int cumulative_columns = vec_cumu_blkCol_size[my_rank];
             int Hsize = Hsize_glo;
             auto &GC_ID = global_contact_index;
             auto &CT_ID = contact_transmission_index;
@@ -2661,7 +2661,7 @@ void c_NEGF_Common<T>::Compute_DensityOfStates(std::string dos_foldername,
                     GR_loc(n) = one / (Alpha(n) - X(n) - Y(n));
 #endif
 
-                    MatrixBlock<T> A_tk[NUM_CONTACTS];
+                    [[maybe_unused]] MatrixBlock<T> A_tk[NUM_CONTACTS];
                     MatrixBlock<T> Gamma[NUM_CONTACTS];
 #ifdef COMPUTE_SPECTRAL_FUNCTION_OFFDIAG_ELEMS
                     for (int m = 0; m < Hsize; ++m)
@@ -3120,7 +3120,7 @@ void c_NEGF_Common<T>::Compute_RhoNonEq()
     auto const &h_minusHa_loc = h_minusHa_loc_data.table();
     auto const &h_Hb_loc = h_Hb_loc_data.table();
     auto const &h_Hc_loc = h_Hc_loc_data.table();
-    auto const &h_tau = h_tau_glo_data.table();
+    [[maybe_unused]] auto const &h_tau = h_tau_glo_data.table();
 
     Allocate_TemporaryArraysForGFComputation();
 
@@ -3171,15 +3171,15 @@ void c_NEGF_Common<T>::Compute_RhoNonEq()
     auto const &A_loc = h_A_loc_data.table();
     /*constant references*/
     auto const &Alpha = h_Alpha_loc_data.const_table();
-    auto const &Xtil_glo = h_Xtil_glo_data.const_table();
-    auto const &Ytil_glo = h_Ytil_glo_data.const_table();
+    [[maybe_unused]] auto const &Xtil_glo = h_Xtil_glo_data.const_table();
+    [[maybe_unused]] auto const &Ytil_glo = h_Ytil_glo_data.const_table();
     auto const &X = h_X_loc_data.const_table();
     auto const &Y = h_Y_loc_data.const_table();
 
     auto const &Alpha_contact = h_Alpha_contact_data.const_table();
     auto const &X_contact = h_X_contact_data.const_table();
     auto const &Y_contact = h_Y_contact_data.const_table();
-    auto const &Sigma_contact = h_Sigma_contact_data.const_table();
+    [[maybe_unused]] auto const &Sigma_contact = h_Sigma_contact_data.const_table();
     auto const &Fermi_contact = h_Fermi_contact_data.const_table();
 
     auto &degen_vec = block_degen_vec;
@@ -3367,7 +3367,7 @@ void c_NEGF_Common<T>::Compute_RhoNonEq()
 #endif
 
             /*following is for lambda capture*/
-            int cumulative_columns = vec_cumu_blkCol_size[my_rank];
+            [[maybe_unused]] int cumulative_columns = vec_cumu_blkCol_size[my_rank];
             int Hsize = Hsize_glo;
             auto &GC_ID = global_contact_index;
             auto *degen_vec_ptr = degen_vec.dataPtr();
@@ -3398,7 +3398,7 @@ void c_NEGF_Common<T>::Compute_RhoNonEq()
                     GR_loc(n) = one / (Alpha(n) - X(n) - Y(n));
 #endif
 
-                    MatrixBlock<T> A_tk[NUM_CONTACTS];
+                    [[maybe_unused]] MatrixBlock<T> A_tk[NUM_CONTACTS];
                     MatrixBlock<T> Gamma[NUM_CONTACTS];
                     MatrixBlock<T> AnF_sum;
                     AnF_sum = 0.;
@@ -3586,7 +3586,7 @@ void c_NEGF_Common<T>::Compute_RhoEq()
     auto const &h_minusHa_loc = h_minusHa_loc_data.table();
     auto const &h_Hb_loc = h_Hb_loc_data.table();
     auto const &h_Hc_loc = h_Hc_loc_data.table();
-    auto const &h_tau = h_tau_glo_data.table();
+    [[maybe_unused]] auto const &h_tau = h_tau_glo_data.table();
 
     Allocate_TemporaryArraysForGFComputation();
 
@@ -3622,11 +3622,11 @@ void c_NEGF_Common<T>::Compute_RhoEq()
     auto const &RhoEq_loc = h_RhoEq_loc_data.table();
     /*constant references*/
     auto const &Alpha = h_Alpha_loc_data.const_table();
-    auto const &Xtil_glo = h_Xtil_glo_data.const_table();
-    auto const &Ytil_glo = h_Ytil_glo_data.const_table();
+    [[maybe_unused]] auto const &Xtil_glo = h_Xtil_glo_data.const_table();
+    [[maybe_unused]] auto const &Ytil_glo = h_Ytil_glo_data.const_table();
     auto const &X = h_X_loc_data.const_table();
     auto const &Y = h_Y_loc_data.const_table();
-    auto const &Sigma_contact = h_Sigma_contact_data.const_table();
+    [[maybe_unused]] auto const &Sigma_contact = h_Sigma_contact_data.const_table();
     auto &degen_vec = block_degen_vec;
 #endif
 
@@ -3736,7 +3736,7 @@ void c_NEGF_Common<T>::Compute_RhoEq()
 
             /*following is for lambda capture*/
 
-            int cumulative_columns = vec_cumu_blkCol_size[my_rank];
+            [[maybe_unused]] int cumulative_columns = vec_cumu_blkCol_size[my_rank];
             auto *degen_vec_ptr = degen_vec.dataPtr();
             ComplexType nF_eq = FermiFunction(E - mu_min, kT_min);
 
@@ -3789,7 +3789,7 @@ void c_NEGF_Common<T>::Compute_GR_atPoles()
     auto const &h_minusHa_loc = h_minusHa_loc_data.table();
     auto const &h_Hb_loc = h_Hb_loc_data.table();
     auto const &h_Hc_loc = h_Hc_loc_data.table();
-    auto const &h_tau = h_tau_glo_data.table();
+    [[maybe_unused]] auto const &h_tau = h_tau_glo_data.table();
 
     Allocate_TemporaryArraysForGFComputation();
     auto const &h_Alpha_loc = h_Alpha_loc_data.table();
@@ -3825,11 +3825,11 @@ void c_NEGF_Common<T>::Compute_GR_atPoles()
     auto const &GR_atPoles_loc = h_GR_atPoles_loc_data.table();
     /*constant references*/
     auto const &Alpha = h_Alpha_loc_data.const_table();
-    auto const &Xtil_glo = h_Xtil_glo_data.const_table();
-    auto const &Ytil_glo = h_Ytil_glo_data.const_table();
+    [[maybe_unused]] auto const &Xtil_glo = h_Xtil_glo_data.const_table();
+    [[maybe_unused]] auto const &Ytil_glo = h_Ytil_glo_data.const_table();
     auto const &X = h_X_loc_data.const_table();
     auto const &Y = h_Y_loc_data.const_table();
-    auto const &Sigma_contact = h_Sigma_contact_data.const_table();
+    [[maybe_unused]] auto const &Sigma_contact = h_Sigma_contact_data.const_table();
     auto &degen_vec = block_degen_vec;
 #endif
 
@@ -3962,7 +3962,7 @@ void c_NEGF_Common<T>::Compute_Rho0()
     auto const &h_minusHa_loc = h_minusHa_loc_data.table();
     auto const &h_Hb_loc = h_Hb_loc_data.table();
     auto const &h_Hc_loc = h_Hc_loc_data.table();
-    auto const &h_tau = h_tau_glo_data.table();
+    [[maybe_unused]] auto const &h_tau = h_tau_glo_data.table();
 
     Allocate_TemporaryArraysForGFComputation();
 
@@ -3994,11 +3994,11 @@ void c_NEGF_Common<T>::Compute_Rho0()
     auto const &Rho0_loc = h_Rho0_loc_data.table();
     /*constant references*/
     auto const &Alpha = h_Alpha_loc_data.const_table();
-    auto const &Xtil_glo = h_Xtil_glo_data.const_table();
-    auto const &Ytil_glo = h_Ytil_glo_data.const_table();
+    [[maybe_unused]] auto const &Xtil_glo = h_Xtil_glo_data.const_table();
+    [[maybe_unused]] auto const &Ytil_glo = h_Ytil_glo_data.const_table();
     auto const &X = h_X_loc_data.const_table();
     auto const &Y = h_Y_loc_data.const_table();
-    auto const &Sigma_contact = h_Sigma_contact_data.const_table();
+    [[maybe_unused]] auto const &Sigma_contact = h_Sigma_contact_data.const_table();
     auto &degen_vec = block_degen_vec;
 #endif
 
@@ -4069,7 +4069,7 @@ void c_NEGF_Common<T>::Compute_Rho0()
 #endif
 
             /*following is for lambda capture*/
-            int cumulative_columns = vec_cumu_blkCol_size[my_rank];
+            [[maybe_unused]] int cumulative_columns = vec_cumu_blkCol_size[my_rank];
             auto *degen_vec_ptr = degen_vec.dataPtr();
             amrex::Real const_multiplier = -1 * spin_degen / (MathConst::pi);
 
@@ -4168,7 +4168,7 @@ template <typename T>
 void c_NEGF_Common<T>::get_Sigma_at_contacts(BlkTable1D &h_Sigma_contact_data,
                                              ComplexType E)
 {
-    auto const &h_tau = h_tau_glo_data.table();
+    [[maybe_unused]] auto const &h_tau = h_tau_glo_data.table();
     auto const &h_Sigma = h_Sigma_contact_data.table();
 
     for (std::size_t c = 0; c < NUM_CONTACTS; ++c)
@@ -4328,7 +4328,7 @@ void c_NEGF_Common<T>::Compute_Current()
     auto const &h_minusHa_loc = h_minusHa_loc_data.table();
     auto const &h_Hb_loc = h_Hb_loc_data.table();
     auto const &h_Hc_loc = h_Hc_loc_data.table();
-    auto const &h_tau = h_tau_glo_data.table();
+    [[maybe_unused]] auto const &h_tau = h_tau_glo_data.table();
     auto const &h_Current_loc = h_Current_loc_data.table();
 
     Allocate_TemporaryArraysForGFComputation();
@@ -4382,19 +4382,19 @@ void c_NEGF_Common<T>::Compute_Current()
     auto const &A_loc = h_A_loc_data.table();
     /*constant references*/
     auto const &Alpha = h_Alpha_loc_data.const_table();
-    auto const &Xtil_glo = h_Xtil_glo_data.const_table();
-    auto const &Ytil_glo = h_Ytil_glo_data.const_table();
+    [[maybe_unused]] auto const &Xtil_glo = h_Xtil_glo_data.const_table();
+    [[maybe_unused]] auto const &Ytil_glo = h_Ytil_glo_data.const_table();
     auto const &X = h_X_loc_data.const_table();
     auto const &Y = h_Y_loc_data.const_table();
 
     auto const &Alpha_contact = h_Alpha_contact_data.const_table();
     auto const &X_contact = h_X_contact_data.const_table();
     auto const &Y_contact = h_Y_contact_data.const_table();
-    auto const &Sigma_contact = h_Sigma_contact_data.const_table();
+    [[maybe_unused]] auto const &Sigma_contact = h_Sigma_contact_data.const_table();
     auto const &Fermi_contact = h_Fermi_contact_data.const_table();
 
-    auto *trace_r = h_Trace_r.dataPtr();
-    auto *trace_i = h_Trace_i.dataPtr();
+    [[maybe_unused]] auto *trace_r = h_Trace_r.dataPtr();
+    [[maybe_unused]] auto *trace_i = h_Trace_i.dataPtr();
     auto &degen_vec = block_degen_vec;
 #endif
 
@@ -4571,7 +4571,7 @@ void c_NEGF_Common<T>::Compute_Current()
 #endif
 
             /*following is for lambda capture*/
-            int cumulative_columns = vec_cumu_blkCol_size[my_rank];
+            [[maybe_unused]] int cumulative_columns = vec_cumu_blkCol_size[my_rank];
             int Hsize = Hsize_glo;
             auto &GC_ID = global_contact_index;
             auto *degen_vec_ptr = degen_vec.dataPtr();
@@ -4604,7 +4604,7 @@ void c_NEGF_Common<T>::Compute_Current()
                     GR_loc(n) = one / (Alpha(n) - X(n) - Y(n));
 #endif
 
-                    MatrixBlock<T> A_tk[NUM_CONTACTS];
+                    [[maybe_unused]] MatrixBlock<T> A_tk[NUM_CONTACTS];
                     MatrixBlock<T> Gamma[NUM_CONTACTS];
                     MatrixBlock<T> Gn_nn;
                     Gn_nn = 0.;

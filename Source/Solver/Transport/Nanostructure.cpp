@@ -145,7 +145,7 @@ void c_Nanostructure<NSType>::Evaluate_LocalFieldSites()
         auto np = pti.numParticles();
 
         const auto &particles = pti.GetArrayOfStructs();
-        const auto p_par = particles().data();
+        [[maybe_unused]] const auto p_par = particles().data();
 
         auto &par_site_id = pti.get_site_id();
         auto *p_site_id = par_site_id.data();
@@ -244,7 +244,7 @@ template <typename NSType>
 void c_Nanostructure<NSType>::Mark_CellsWithAtoms()
 {
     auto &rCode = c_Code::GetInstance();
-    auto &rPost = rCode.get_PostProcessor();
+    [[maybe_unused]] auto &rPost = rCode.get_PostProcessor();
     auto &rMprop = rCode.get_MacroscopicProperties();
 
     const auto &plo = _geom->ProbLoArray();
@@ -260,7 +260,7 @@ void c_Nanostructure<NSType>::Mark_CellsWithAtoms()
         auto np = pti.numParticles();
 
         const auto &particles = pti.GetArrayOfStructs();
-        const auto p_par = particles().data();
+        [[maybe_unused]] const auto p_par = particles().data();
         auto mf_arr = mf.array(pti);
         amrex::ParallelFor(
             np,
@@ -294,7 +294,7 @@ void c_Nanostructure<NSType>::Gather_PotentialAtAtoms()
         auto np = pti.numParticles();
         // amrex::Print() << "np in Gather: " << np << "\n";
         const auto &particles = pti.GetArrayOfStructs();
-        const auto p_par = particles().data();
+        [[maybe_unused]] const auto p_par = particles().data();
 
         auto &par_gather = pti.get_realPA_comp(realPA::gather);
         auto p_par_gather = par_gather.data();
@@ -328,7 +328,7 @@ void c_Nanostructure<NSType>::Deposit_ZeroToMesh()
         auto np = pti.numParticles();
 
         const auto &particles = pti.GetArrayOfStructs();
-        const auto p_par = particles().data();
+        [[maybe_unused]] const auto p_par = particles().data();
 
         auto rho = p_mf_deposit->array(pti);
 
@@ -363,10 +363,10 @@ void c_Nanostructure<NSType>::Deposit_ChargeDensityToMesh()
         auto np = pti.numParticles();
 
         const auto &particles = pti.GetArrayOfStructs();
-        const auto p_par = particles().data();
+        [[maybe_unused]] const auto p_par = particles().data();
 
         const auto &par_deposit = pti.get_realPA_comp(realPA::deposit);
-        const auto p_par_deposit = par_deposit.data();
+        [[maybe_unused]] const auto p_par_deposit = par_deposit.data();
 
         auto &par_site_id = pti.get_site_id();
         auto *p_site_id = par_site_id.data();
@@ -379,7 +379,7 @@ void c_Nanostructure<NSType>::Deposit_ChargeDensityToMesh()
 
         amrex::Real vol = AMREX_D_TERM(dx[0], *dx[1], *dx[2]);
 
-        auto const &h_n_curr_in_loc = NSType::h_n_curr_in_loc_data.table();
+        [[maybe_unused]] auto const &h_n_curr_in_loc = NSType::h_n_curr_in_loc_data.table();
 
         amrex::ParallelFor(np,
                            [=] AMREX_GPU_DEVICE(int p) noexcept
@@ -419,7 +419,7 @@ void c_Nanostructure<NSType>::Obtain_PotentialAtSites()
         auto np = pti.numParticles();
 
         const auto &particles = pti.GetArrayOfStructs();
-        const auto p_par = particles().data();
+        [[maybe_unused]] const auto p_par = particles().data();
 
         auto &par_gather = pti.get_realPA_comp(realPA::gather);
         auto p_par_gather = par_gather.data();

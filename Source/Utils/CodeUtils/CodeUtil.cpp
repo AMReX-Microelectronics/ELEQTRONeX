@@ -179,7 +179,7 @@ void Multifab_Manipulation::SpecifyValueOnlyOnCutcells(amrex::MultiFab &mf,
     {
         const auto &box = mfi.tilebox(iv, mf.nGrowVect());
 
-        auto const &mf_array = mf.array(mfi);
+        [[maybe_unused]] auto const &mf_array = mf.array(mfi);
 
         amrex::FabType fab_type = flags[mfi].getType(box);
 
@@ -235,7 +235,7 @@ void Multifab_Manipulation::SpecifyValueOnlyOnCutcells_UsingParser_4vars(
     {
         const auto &box = mfi.tilebox(iv, mf.nGrowVect());
 
-        auto const &mf_array = mf.array(mfi);
+        [[maybe_unused]] auto const &mf_array = mf.array(mfi);
 
         amrex::FabType fab_type = flags[mfi].getType(box);
 
@@ -294,7 +294,7 @@ void Multifab_Manipulation::SpecifyValueOnlyOnCutcells_UsingParser_3vars(
     {
         const auto &box = mfi.tilebox(iv, mf.nGrowVect());
 
-        auto const &mf_array = mf.array(mfi);
+        [[maybe_unused]] auto const &mf_array = mf.array(mfi);
 
         amrex::FabType fab_type = flags[mfi].getType(box);
 
@@ -418,7 +418,7 @@ amrex::Real Multifab_Manipulation::GetTotalNumberOfCutcells(amrex::MultiFab &mf)
     {
         const auto &box = mfi.tilebox();
 
-        auto const &mf_array = mf.array(mfi);
+        [[maybe_unused]] auto const &mf_array = mf.array(mfi);
 
         amrex::FabType fab_type = flags[mfi].getType(box);
         if ((fab_type != amrex::FabType::regular) &&
@@ -475,7 +475,7 @@ void Multifab_Manipulation::Copy_3DCartesian_To_2DAzimuthalLongitudinal(
     {
         const auto &box = mfi.tilebox();
 
-        auto const &mf_array = mf.array(mfi);
+        [[maybe_unused]] auto const &mf_array = mf.array(mfi);
 
         amrex::FabType fab_type = flags[mfi].getType(box);
 
@@ -491,7 +491,7 @@ void Multifab_Manipulation::Copy_3DCartesian_To_2DAzimuthalLongitudinal(
                         vfrac_array(i, j, k) < 1. - VFRAC_THREASHOLD)
                     {
                         amrex::RealArray cart;
-                        amrex::Array<int, 3> index = {i, j, k};
+                        [[maybe_unused]] amrex::Array<int, 3> index = {i, j, k};
                         amrex::Real fac_x = (1._rt - iv[0]) * dx[0] * 0.5_rt;
                         cart[0] =
                             i * dx[0] + real_box.lo(0) + fac_x - center[0];
@@ -504,7 +504,7 @@ void Multifab_Manipulation::Copy_3DCartesian_To_2DAzimuthalLongitudinal(
                         cart[2] =
                             k * dx[2] + real_box.lo(2) + fac_z - center[2];
 
-                        amrex::Real theta =
+                        [[maybe_unused]] amrex::Real theta =
                             atan2(cart[dir_ref2], cart[dir_ref1]);
                     }
                 });

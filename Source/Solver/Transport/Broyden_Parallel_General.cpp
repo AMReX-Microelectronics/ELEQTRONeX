@@ -81,7 +81,7 @@ void c_TransportSolver::Set_Broyden_Parallel()
     h_n_curr_in_data.resize({0}, {site_size_loc_all_NS}, The_Pinned_Arena());
     SetVal_RealTable1D(h_n_curr_in_data, 0.);
 
-    auto const &h_n_curr_in = h_n_curr_in_data.table();
+    [[maybe_unused]] auto const &h_n_curr_in = h_n_curr_in_data.table();
 
     /*Need generalization for multiple CNTs*/
     for (int c = 0; c < vp_NS.size(); ++c)
