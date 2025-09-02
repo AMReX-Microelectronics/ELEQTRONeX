@@ -89,6 +89,11 @@ if(ELEQTRONeX_APP)
         set(binary_name "${binary_name}.BROYPRLL")
     endif()
 
+    # Add SKIPGPU suffix when not using GPU backend (matching gnumake logic)
+    if(NOT ELEQTRONeX_COMPUTE STREQUAL "CUDA" AND NOT ELEQTRONeX_COMPUTE STREQUAL "HIP")
+        set(binary_name "${binary_name}.SKIPGPU")
+    endif()
+
     # Add compute backend
     if(ELEQTRONeX_COMPUTE STREQUAL "OMP")
         set(binary_name "${binary_name}.OMP")
@@ -161,6 +166,11 @@ if(ELEQTRONeX_APP)
 
     if(ELEQTRONeX_BROYDEN_PARALLEL)
         target_compile_definitions(${binary_name} PRIVATE BROYDEN_PARALLEL)
+    endif()
+
+    # Matching gnumake logic: skip GPU optimization when not using GPU backend
+    if(NOT ELEQTRONeX_COMPUTE STREQUAL "CUDA" AND NOT ELEQTRONeX_COMPUTE STREQUAL "HIP")
+        target_compile_definitions(${binary_name} PRIVATE BROYDEN_SKIP_GPU_OPTIMIZATION)
     endif()
 
     # Print debug options - matches Make.Code logic
