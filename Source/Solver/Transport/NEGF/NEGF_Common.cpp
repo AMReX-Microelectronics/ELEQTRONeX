@@ -3932,7 +3932,7 @@ void c_NEGF_Common<T>::Compute_GR_atPoles()
 #endif
 
         /*following is for lambda capture*/
-        int cumulative_columns = vec_cumu_blkCol_size[my_rank];
+        [[maybe_unused]] int cumulative_columns = vec_cumu_blkCol_size[my_rank];
 
         ComplexType pole_const(0., -2 * kT_min * spin_degen);
         auto *degen_vec_ptr = degen_vec.dataPtr();
