@@ -240,7 +240,7 @@ void c_Code::EstimateOfRequiredMemory()
 
     auto &rGprop = *m_pGeometryProperties;
     auto &rMprop = *m_pMacroscopicProperties;
-    auto &rBC = *m_pBoundaryConditions;
+    [[maybe_unused]] auto &rBC = *m_pBoundaryConditions;
     auto &rPost = *m_pPostProcessor;
     auto &rOutput = *m_pOutput;
     auto const &n_cell_array = rGprop.get_NumCells();

@@ -103,7 +103,7 @@ void c_EmbeddedBoundaries::ReadGeometry()
     if (!specify_input_using_eb2)
     {
         num_objects = 0;
-        bool basic_objects_specified =
+        [[maybe_unused]] bool basic_objects_specified =
             pp_ebgeom.queryarr("objects", vec_object_names);
         int c = 0;
         for (auto it : vec_object_names)

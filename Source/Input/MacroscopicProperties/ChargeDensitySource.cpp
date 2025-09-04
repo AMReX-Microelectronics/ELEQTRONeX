@@ -81,7 +81,7 @@ void c_ChargeDensitySource<ParticleContainerType>::Gather(
         auto *p_par_rel_diff = par_rel_diff.data();
 
         amrex::Real MF = Get_mixing_factor();
-        amrex::Real THRESHOLD_REL_DIFF = 1.;
+        [[maybe_unused]] amrex::Real THRESHOLD_REL_DIFF = 1.;
 
         amrex::ParallelFor(np,
                            [=] AMREX_GPU_DEVICE(int p)

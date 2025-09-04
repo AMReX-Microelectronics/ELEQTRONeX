@@ -50,9 +50,9 @@ int c_MacroscopicProperties::ReadParameterMapAndNumberOfGhostCells()
 
     amrex::ParmParse pp_macro("macroscopic");
 
-    bool varnames_specified =
+    [[maybe_unused]] bool varnames_specified =
         pp_macro.queryarr("fields_to_define", fields_to_define);
-    bool ghostcells_specified =
+    [[maybe_unused]] bool ghostcells_specified =
         pp_macro.queryarr("ghostcells_for_fields", ghostcells_for_fields);
 
     std::map<std::string, int>::iterator it_map_param_all;
@@ -316,10 +316,10 @@ void c_MacroscopicProperties::ReInitializeMacroparam(std::string macro_str)
     auto &rCode = c_Code::GetInstance();
     auto &rGprop = rCode.get_GeometryProperties();
     auto &geom = rGprop.geom;
-    auto &ba = rGprop.ba;
-    auto &dm = rGprop.dm;
-    auto Nghost = map_num_ghostcell[macro_str];
-    auto Ncomp = 1;
+    [[maybe_unused]] auto &ba = rGprop.ba;
+    [[maybe_unused]] auto &dm = rGprop.dm;
+    [[maybe_unused]] auto Nghost = map_num_ghostcell[macro_str];
+    [[maybe_unused]] auto Ncomp = 1;
 
     if (m_macro_type[macro_num] == "constant")
     {

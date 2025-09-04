@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // CUDA error checking
 ////////////////////////////////////////////////////////////////////////////////
+#ifdef AMREX_USE_CUDA
 #define checkCudaErrors(val) \
     __checkCudaErrors__((val), #val, __FILE__, __LINE__)
 
@@ -16,3 +17,7 @@ inline void __checkCudaErrors__(T code, const char *func, const char *file,
         exit(EXIT_FAILURE);
     }
 }
+#else
+// No-op for non-CUDA builds
+#define checkCudaErrors(val) do { (void)(val); } while(0)
+#endif

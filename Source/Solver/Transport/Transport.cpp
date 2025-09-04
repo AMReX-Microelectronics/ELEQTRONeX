@@ -145,7 +145,7 @@ void c_TransportSolver::Read_NSTypes(amrex::ParmParse &pp)
 
 void c_TransportSolver::InitData()
 {
-    amrex::Real negf_init_time = amrex::second();
+    [[maybe_unused]] amrex::Real negf_init_time = amrex::second();
 
     amrex::Print() << "\n##### TRANSPORT PROPERTIES #####\n\n";
 
@@ -361,7 +361,7 @@ void c_TransportSolver::Solve(const int step, const amrex::Real time)
     auto &rCode = c_Code::GetInstance();
     auto &rMprop = rCode.get_MacroscopicProperties();
     auto &rMLMG = rCode.get_MLMGSolver();
-    auto &rOutput = rCode.get_Output();
+    [[maybe_unused]] auto &rOutput = rCode.get_Output();
     auto &rPostPro = rCode.get_PostProcessor();
 
     m_iter = 0;
@@ -398,7 +398,7 @@ void c_TransportSolver::Solve(const int step, const amrex::Real time)
             rMprop.ReInitializeMacroparam(NS_gather_field_str);
             rMLMG.UpdateBoundaryConditions(flag_update_terminal_bias);
 
-            auto mlmg_solve_time = rMLMG.Solve_PoissonEqn();
+            [[maybe_unused]] auto mlmg_solve_time = rMLMG.Solve_PoissonEqn();
             rPostPro.Compute();
             // rOutput.WriteOutput(m_iter+100, time);
 
@@ -559,8 +559,8 @@ void c_TransportSolver::Copy_BroydenPredictedChargeToHost(int NS_id)
 void c_TransportSolver::Copy_DataToBeWrittenToHost(int NS_id)
 {
 #ifdef BROYDEN_SKIP_GPU_OPTIMIZATION
-    auto const &h_n_curr_out = h_n_curr_out_data.table();
-    auto const &h_Norm = h_Norm_data.table();
+    [[maybe_unused]] auto const &h_n_curr_out = h_n_curr_out_data.table();
+    [[maybe_unused]] auto const &h_Norm = h_Norm_data.table();
 #else
     /*only select data need to be copied for multiple NS*/
 
@@ -574,8 +574,8 @@ void c_TransportSolver::Copy_DataToBeWrittenToHost(int NS_id)
     h_n_curr_out_data.resize({0}, {site_size_loc}, The_Pinned_Arena());
     h_Norm_data.resize({0}, {site_size_loc}, The_Pinned_Arena());
 
-    auto const &h_n_curr_out = h_n_curr_out_data.table();
-    auto const &h_Norm = h_Norm_data.table();
+    [[maybe_unused]] auto const &h_n_curr_out = h_n_curr_out_data.table();
+    [[maybe_unused]] auto const &h_Norm = h_Norm_data.table();
 
     auto const &d_n_curr_out = d_n_curr_out_data.const_table();
     auto const &d_Norm = d_Norm_data.const_table();

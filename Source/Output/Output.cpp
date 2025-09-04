@@ -99,7 +99,7 @@ int c_Output::ReadData()
     queryWithParser(pp_plot, "rawfield_write_interval",
                     _rawfield_write_interval);
 
-    bool varnames_specified =
+    [[maybe_unused]] bool varnames_specified =
         pp_plot.queryarr("fields_to_plot", fields_to_plot_withGhost_str);
 
     int num_params_without_option_2 =
