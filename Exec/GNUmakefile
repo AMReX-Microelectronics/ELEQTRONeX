@@ -7,7 +7,6 @@ USE_CUDA     = FALSE
 USE_HYPRE    = FALSE
 COMP         = gnu
 DIM          = 3
-CXXSTD       = c++17
 TINY_PROFILE   = FALSE
 
 
