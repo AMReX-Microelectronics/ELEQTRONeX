@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH -N 8
+#SBATCH -C gpu
+#SBATCH -G 32
+#SBATCH -J rseed0_rhoDot2_exp2
+#SBATCH -q regular
+#SBATCH -t 48:00:00
+#SBATCH -A m3766
+#SBATCH -o out_rseed0.o%j
+#SBATCH -e out_rseed0.e%j
+
+#OpenMP settings:
+export OMP_NUM_THREADS=1
+export OMP_PLACES=threads
+export OMP_PROC_BIND=spread
+
+
+#run the application:
+srun -n 32 -c 32 --cpu_bind=cores -G 32 ../../../../Exec/main3d.gnu.MPI.CUDA.EB.TD.TRAN.BROYPRLL.HYPRE.ex ../../../../input/negf/point_charges/topgate_CNTFET_3Drand pc.Et=0.02 pc.V0=0.5 pc.mixing_factor=0.02 pc.charge_density=0.25e27 my_constants.Vgs_max=0.5 my_constants.Vgs_min=-1.6 my_constants.Nsteps=21 plot.folder_name=/global/cfs/projectdirs/m3766/ELEQTRONeX/point_charge/topgate_CNTFET/density_variation_3D/rhoDot2.5_exp9_FULL use_diagnostics=1 pc.random_seed=0 my_constants.m_index=13 my_constants.GO_thickness=6e-9 my_constants.G_length=68e-9 #restart=1 restart_step=7
