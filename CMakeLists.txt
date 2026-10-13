@@ -26,6 +26,11 @@ option(ELEQTRONeX_TRANSPORT "Transport support" ON)
 option(ELEQTRONeX_TIME_DEPENDENT "Time-dependent support" ON)
 option(ELEQTRONeX_BROYDEN_PARALLEL "Broyden parallel support" ON)
 option(ELEQTRONeX_HYPRE "HYPRE support" OFF)
+set(ELEQTRONeX_BLOCK_SIZE 1 CACHE STRING
+    "NEGF block dimension (for graphene ribbons, twice the zigzag-chain count)")
+if(ELEQTRONeX_BLOCK_SIZE LESS 1)
+    message(FATAL_ERROR "ELEQTRONeX_BLOCK_SIZE must be a positive integer")
+endif()
 
 # Dependency options
 option(ELEQTRONeX_amrex_internal "Download & build AMReX" ON)
@@ -162,6 +167,7 @@ if(ELEQTRONeX_APP)
 
     if(ELEQTRONeX_TRANSPORT)
         target_compile_definitions(${binary_name} PRIVATE USE_TRANSPORT)
+        target_compile_definitions(${binary_name} PRIVATE BLOCK_SIZE=${ELEQTRONeX_BLOCK_SIZE})
     endif()
 
     if(ELEQTRONeX_BROYDEN_PARALLEL)
