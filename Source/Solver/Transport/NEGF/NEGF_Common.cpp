@@ -1079,14 +1079,6 @@ void c_NEGF_Common<T>::Generate_AtomLocations(amrex::Vector<s_Position3D> &pos)
     /*Also, specify PrimaryTransportDirection PTD array*/
     /*amrex::Print() << "PTD is specified in nm! \n";*/
 
-    for (int l = 0; l < num_field_sites; ++l)
-    {
-        h_PTD_glo_vec[l] =
-            pos[l * num_atoms_per_field_site].dir[primary_transport_dir] /
-            1.e-9;
-        // amrex::Print() << l << "  " << h_PTD_glo_vec(l) << "\n";
-    }
-
     for (int i = 0; i < num_atoms; ++i)
     {
         for (int j = 0; j < AMREX_SPACEDIM; ++j)
@@ -1097,6 +1089,8 @@ void c_NEGF_Common<T>::Generate_AtomLocations(amrex::Vector<s_Position3D> &pos)
         if (p_rotator != nullptr)
             p_rotator->RotateContainer(pos[i].dir, offset);
     }
+
+    Set_TransportCoordinatesFromAtomLocations(pos);
 }
 
 template <typename T>
@@ -1660,8 +1654,8 @@ void c_NEGF_Common<T>::Add_PotentialToHamiltonian()
 
     for (int c = 0; c < blkCol_size_loc; ++c)
     {
-        h_minusHa(c) =
-            -1 * h_U_loc(c); /*Note: Ha = H0a (=0) + U, so -Ha = -U */
+        h_minusHa(c).SetDiag(-h_U_loc(c));
+        /* Keep any within-slice hopping terms in a multi-orbital block. */
     }
 }
 
@@ -4174,7 +4168,7 @@ void c_NEGF_Common<T>::get_Sigma_at_contacts(BlkTable1D &h_Sigma_contact_data,
     for (std::size_t c = 0; c < NUM_CONTACTS; ++c)
     {
         MatrixBlock<T> gr;
-        Compute_SurfaceGreensFunction(gr, E, U_contact[c]);
+        Compute_SurfaceGreensFunctionForContact(gr, E, U_contact[c], c);
         h_Sigma(c) = h_tau(c) * gr * h_tau(c).Dagger();
     }
 }

@@ -235,6 +235,7 @@ void c_Nanostructure<NSType>::Read_AtomLocations()
                     }
                 }
                 infile.close();
+                NSType::Set_TransportCoordinatesFromAtomLocations(pos_vec);
             }
         }
     }

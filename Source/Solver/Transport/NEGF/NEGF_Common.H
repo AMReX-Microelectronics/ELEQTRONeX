@@ -322,6 +322,13 @@ class c_NEGF_Common : protected MatrixBlock<T>, private c_IntegrationPath
     virtual void Compute_SurfaceGreensFunction(MatrixBlock<T> &gr,
                                                const ComplexType E,
                                                const ComplexType U);
+    virtual void Compute_SurfaceGreensFunctionForContact(
+        MatrixBlock<T> &gr, const ComplexType E, const ComplexType U,
+        const int contact)
+    {
+        (void)contact;
+        Compute_SurfaceGreensFunction(gr, E, U);
+    }
 
     void Write_Current(const int step, const int total_iterations_in_step,
                        const amrex::Real avg_intg_pts);
@@ -584,6 +591,17 @@ class c_NEGF_Common : protected MatrixBlock<T>, private c_IntegrationPath
     std::string get_step_foldername() const { return step_foldername_str; }
     std::string get_iter_foldername() const { return iter_foldername_str; }
     std::string get_read_atom_filename() const { return read_atom_filename; }
+    void Set_TransportCoordinatesFromAtomLocations(
+        const amrex::Vector<s_Position3D> &positions)
+    {
+        for (int l = 0; l < num_field_sites; ++l)
+        {
+            h_PTD_glo_vec[l] =
+                positions[l * num_atoms_per_field_site]
+                    .dir[primary_transport_dir] /
+                1.e-9;
+        }
+    }
 
     // for negf specific output
     int get_Total_Integration_Pts() const;

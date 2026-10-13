@@ -302,7 +302,6 @@ int c_TransportSolver::Instantiate_Materials()
             case s_NS_Type::Graphene:
             {
                 Create_Nanostructure<c_Graphene>(name, NS_id_counter);
-                amrex::Abort("NS_type graphene is not yet defined.");
                 break;
             }
             case s_NS_Type::Silicon:

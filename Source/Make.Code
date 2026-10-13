@@ -6,6 +6,10 @@ endif
 
 include $(AMREX_HOME)/Tools/GNUMake/Make.defs
 
+ifneq ($(strip $(BLOCK_SIZE)),)
+  DEFINES += -DBLOCK_SIZE=$(BLOCK_SIZE)
+endif
+
 include $(CODE_HOME)/Source/Make.package
 
 Code_dirs = Utils Input Solver PostProcessor Diagnostics Output
